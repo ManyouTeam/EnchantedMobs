@@ -1,0 +1,19 @@
+enabled: true
+placeholder: 'Necromancer'
+apply-rules:
+  group: ranged_magic
+  weight: 2
+  match-entity:
+    any: true
+  level-weight: 35~90
+on-target:
+  abilities:
+    1:
+      type: limit
+      random: 0.15
+      cooldown: 10
+      abilities:
+        1:
+          type: launch_projectile
+          entity-type: WITHER_SKULL
+          speed: 1.0

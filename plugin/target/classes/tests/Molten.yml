@@ -1,0 +1,28 @@
+enabled: true
+placeholder: 'Molten'
+apply-rules:
+  group: elemental
+  group-unique: true
+  weight: 3
+  match-entity:
+    any: true
+  level-weight: 20~60
+on-spawn:
+  abilities:
+    1:
+      type: potion_effect
+      target: SOURCE
+      potion: FIRE_RESISTANCE
+      duration: 999999
+      amplifier: 0
+on-melee-attack:
+  abilities:
+    1:
+      type: fire
+      fire-ticks: 100
+on-death:
+  abilities:
+    1:
+      type: place_block
+      block: FIRE
+      duration: 60

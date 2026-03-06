@@ -1,0 +1,14 @@
+enabled: true
+placeholder: 'Webber'
+apply-rules:
+  group: control
+  weight: 4
+  match-entity:
+    any: true
+  level-weight: 12~35
+on-melee-attack:
+  abilities:
+    1:
+      type: place_block
+      block: COBWEB
+      duration: 80

@@ -1,0 +1,64 @@
+# Web Trap
+# The projectile launched by a monster with this ability will generate a temporary spider web upon landing.
+# 有此能力的怪物射出的抛掷物落地后将会生成临时蜘蛛网。
+
+enabled: true
+placeholder: '{lang:power.web_arrow}'
+
+apply-rules:
+  group: ranged_projectile
+  group-unique: true
+  weight: 5
+  match-entity:
+    ranged: true
+  level-weight: 15~25
+
+limit:
+  random:
+    ">=15;;<23": 0.3
+    ">=23": 0.6
+  cooldown:
+    ">=15;;<22": 10
+    ">=22": 5
+
+on-projectile-hit:
+  abilities:
+    1:
+      type: delay
+      delay:
+        ">=15;;<20": 20
+        ">=20": -1
+      abilities:
+        1:
+          type: place_block
+          block: cobweb
+          duration: '{level} * 4'
+          location:
+            offset-x: 0
+            offset-y: 0
+            offset-z: 0
+        2:
+          type: sound
+          sound: BLOCK_WOOL_PLACE
+        3:
+          type: particle
+          particle: BLOCK
+          count: 20
+          block: cobweb
+        4:
+          type: remove
+
+on-shoot-bow:
+  abilities:
+    1:
+      type: mark
+
+on-projectile-tick:
+  abilities:
+    1:
+      type: particle
+      particle: WHITE_ASH
+      count: 6
+      offset-x: 0.05
+      offset-y: 0.05
+      offset-z: 0.05

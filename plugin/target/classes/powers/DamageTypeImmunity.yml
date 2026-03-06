@@ -1,0 +1,18 @@
+enabled: true
+placeholder: '{lang:power.damage_immunity}'
+
+apply-rules:
+  group: defense
+  weight: 5
+  match-entity:
+    any: true
+  level-weight: 12~24
+
+on-damage:
+  conditions:
+    # 可选伤害类型：FIRE、LAVA、FALL、PROJECTILE、MAGIC...
+    damage-cause:
+      - FIRE
+  abilities:
+    1:
+      type: cancel_event

@@ -1,0 +1,21 @@
+# DefenseMultiplier
+# Multiply defense.
+# 减少受到的伤害。
+
+enabled: true
+placeholder: '{lang:power.defense_multiplier}'
+
+apply-rules:
+  group: misc
+  weight: 36
+  level-weight: 14
+  match-entity:
+    any: true
+
+limit:
+  random: 1
+  cooldown: -1
+
+on-damage:
+  modifier:
+    damage: '{original} * (0.8 - {level} / 500)'

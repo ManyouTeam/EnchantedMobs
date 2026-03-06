@@ -1,0 +1,14 @@
+enabled: true
+placeholder: '1up'
+apply-rules:
+  group: defence
+  group-unique: true
+  weight: 2
+  match-entity:
+    any: true
+  level-weight: 35~80
+on-spawn:
+  abilities:
+    1:
+      type: set_health
+      modifier: '{original} * 2'

@@ -1,0 +1,15 @@
+enabled: true
+placeholder: 'Quicksand'
+apply-rules:
+  group: debuff_melee
+  weight: 5
+  match-entity:
+    any: true
+  level-weight: 12~35
+on-melee-attack:
+  abilities:
+    1:
+      type: potion_effect
+      potion: SLOWNESS
+      duration: 100
+      amplifier: 1

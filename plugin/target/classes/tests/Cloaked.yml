@@ -1,0 +1,17 @@
+enabled: true
+placeholder: 'Cloaked'
+apply-rules:
+  group: utility
+  group-unique: true
+  weight: 2
+  match-entity:
+    any: true
+  level-weight: 20~50
+on-spawn:
+  abilities:
+    1:
+      type: potion_effect
+      target: SOURCE
+      potion: INVISIBILITY
+      duration: 999999
+      amplifier: 0

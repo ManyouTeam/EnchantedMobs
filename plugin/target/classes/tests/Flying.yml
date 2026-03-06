@@ -1,0 +1,17 @@
+enabled: true
+placeholder: 'Flying'
+apply-rules:
+  group: movement
+  group-unique: true
+  weight: 1
+  match-entity:
+    any: true
+  level-weight: 35~100
+on-spawn:
+  abilities:
+    1:
+      type: potion_effect
+      target: SOURCE
+      potion: LEVITATION
+      duration: 999999
+      amplifier: 0

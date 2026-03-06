@@ -1,0 +1,18 @@
+enabled: true
+placeholder: 'Blinding'
+apply-rules:
+  group: debuff_melee
+  weight: 4
+  match-entity:
+    any: true
+  level-weight: 15~35
+limit:
+  random: 0.25
+  cooldown: 10
+on-melee-attack:
+  abilities:
+    1:
+      type: potion_effect
+      potion: BLINDNESS
+      duration: 60
+      amplifier: 0

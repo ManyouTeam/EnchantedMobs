@@ -1,0 +1,26 @@
+# DisarmAttack
+# Disarm player when hit by melee.
+# 近战命中时缴械玩家主手。
+
+enabled: true
+placeholder: '{lang:power.disarm}'
+
+apply-rules:
+  group: melee_control
+  weight: 7
+  match-entity:
+    any: true
+  level-weight: 15~30
+
+limit:
+  random: 0.3
+  cooldown: 6
+
+on-melee-attack:
+  abilities:
+    1:
+      type: disarm
+      target: TARGET
+      slot: MAIN_HAND
+      drop: true
+      pickup-delay: 20

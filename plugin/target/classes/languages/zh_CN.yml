@@ -1,0 +1,53 @@
+error:
+  save-item-not-found: "&#98FB98[EnchantedMobs] &c找不到名为 {item} 的保存物品！"
+  args: "&#98FB98[EnchantedMobs] &c命令使用错误，如果需要帮助请查看插件Wiki！"
+  in-game: "&#98FB98[EnchantedMobs] &c你必须在游戏内执行这个命令！"
+  miss-permission: "&#98FB98[EnchantedMobs] &c你没有权限使用这个命令！"
+  player-not-found: "&#98FB98[EnchantedMobs] &c玩家 {player} 不在线或不存在！"
+  world-not-found: "&#98FB98[EnchantedMobs] &c世界 {world} 不存在！"
+  entity-type-not-found: "&#98FB98[EnchantedMobs] &c实体类型 {type} 不存在！"
+  entity-invalid: "&#98FB98[EnchantedMobs] &c该实体无法附加能力！"
+
+plugin:
+  reloaded: "&#98FB98[EnchantedMobs] &f插件已重载！"
+  saved: "&#98FB98[EnchantedMobs] &f物品已保存！"
+  generated: "&#98FB98[EnchantedMobs] &f已在插件配置文件夹生成当前手持物品的物品格式，请复制到你的配置文件中！"
+
+command-tab:
+  type-item-id: "[输入你想要的物品 ID]"
+
+command:
+  player-power: "&#98FB98[EnchantedMobs] &f{player} 的战力值: &e{power}"
+  chunk-power: "&#98FB98[EnchantedMobs] &f当前位置战力值 &7({world} {x}, {z})&f: &e{power}"
+  entity-skills: "&#98FB98[EnchantedMobs] &f实体 &e{entity}&f 可用技能: &7{skills}"
+
+mob-spawned: "&#98FB98[EnchantedMobs] &f怪物生成成功！"
+
+mob-powered-notify: "&#98FB98[EnchantedMobs] &e强化怪物出现：&f{mob} &7@ &b{world}({x}, {y}, {z})"
+
+override-lang:
+  power.freeze: "冻结"
+  power.blink: "闪烁"
+  power.beam: "守护者射线"
+  power.fireball_shot: "火球射击"
+  power.tnt_shot: "TNT射击"
+  power.armed: "武装"
+  power.homing_arrow: "追踪箭"
+  power.burning: "灼烧"
+  power.explosion_arrow: "爆炸箭"
+  power.explosion_death: "死亡爆炸"
+  power.health_multiplier: "生命强化"
+  power.defense_multiplier: "防御强化"
+  power.damage_multiplier: "伤害强化"
+  power.one_up: "复活"
+  power.lifesteal: "生命窃取"
+  power.lightning: "雷击"
+  power.potion_cloud_death: "死亡药云"
+  power.hook: "钩锁"
+  power.sun_immunity: "阳光免疫"
+  power.web_arrow: "蛛网箭"
+  power.web_attack: "蛛网攻击"
+  power.damage_immunity: "伤害免疫"
+  power.arrow_rain: "箭雨"
+  power.disarm: "缴械"
+  power.shuffle_inventory: "打乱背包"

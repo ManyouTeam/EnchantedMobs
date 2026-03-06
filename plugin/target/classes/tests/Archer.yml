@@ -1,0 +1,30 @@
+enabled: true
+placeholder: 'Archer'
+apply-rules:
+  group: ranged_projectile
+  group-unique: true
+  weight: 4
+  match-entity:
+    any: true
+  level-weight: 15~45
+on-target:
+  abilities:
+    1:
+      type: limit
+      random: 0.2
+      cooldown: 10
+      abilities:
+        1:
+          type: launch_projectile
+          entity-type: ARROW
+          speed: 1.8
+        2:
+          type: launch_projectile
+          entity-type: ARROW
+          speed: 1.6
+          extra-y: 0.07
+        3:
+          type: launch_projectile
+          entity-type: ARROW
+          speed: 1.6
+          extra-y: -0.07

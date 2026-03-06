@@ -1,0 +1,20 @@
+enabled: true
+placeholder: '{lang:power.fireball_shot}'
+
+apply-rules:
+  group: ranged_projectile
+  group-unique: true
+  weight: 5
+  match-entity:
+    ranged: true
+  level-weight: 28~40
+
+limit:
+  random: 1
+  cooldown: -1
+
+on-shoot-bow:
+  modifier:
+    projectile: FIREBALL
+    fireball-yield: 1.2
+    fireball-incendiary: true

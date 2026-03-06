@@ -1,0 +1,18 @@
+enabled: true
+placeholder: 'Withering'
+apply-rules:
+  group: debuff_melee
+  weight: 3
+  match-entity:
+    any: true
+  level-weight: 25~60
+limit:
+  random: 0.2
+  cooldown: 12
+on-melee-attack:
+  abilities:
+    1:
+      type: potion_effect
+      potion: WITHER
+      duration: 60
+      amplifier: 0

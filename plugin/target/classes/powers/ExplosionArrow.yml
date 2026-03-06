@@ -1,0 +1,60 @@
+# Explosion Trap
+# The projectile launched by a monster with this ability will execute explosion.
+# 有此能力的怪物射出的抛掷物落地后将会爆炸。
+
+enabled: true
+placeholder: '{lang:power.explosion_arrow}'
+
+apply-rules:
+  group: ranged_projectile
+  group-unique: true
+  weight: 9
+  match-entity:
+    ranged: true
+  level-weight: 25~45
+
+limit:
+  random: '{level} / 100'
+  cooldown:
+    ">=25;;<30": 10
+    ">=30": 7
+
+on-projectile-hit:
+  abilities:
+    1:
+      type: delay
+      delay: 15
+      abilities:
+        1:
+          type: explosion
+          yield:
+            ">=25;;<30": 1.0
+            ">=30": 1.4
+          set-fire: false
+          break-blocks: false
+          location:
+            offset-x: 0.5
+            offset-y: -0.5
+            offset-z: 0.5
+        2:
+          type: sound
+          sound: ENTITY_TNT_PRIMED
+        3:
+          type: remove
+
+on-shoot-bow:
+  abilities:
+    1:
+      type: mark
+
+on-projectile-tick:
+  abilities:
+    1:
+      type: particle
+      particle: FLAME
+      count: 6
+      offset-x: 0.02
+      offset-y: 0.02
+      offset-z: 0.02
+      extra: 0.01
+

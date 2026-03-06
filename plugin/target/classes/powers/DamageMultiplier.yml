@@ -1,0 +1,21 @@
+# DamageMultiplier
+# Multiply damage.
+# 造成多倍伤害。
+
+enabled: true
+placeholder: '{lang:power.damage_multiplier}'
+
+apply-rules:
+  group: misc
+  weight: 36
+  level-weight: 14
+  match-entity:
+    any: true
+
+limit:
+  random: 1
+  cooldown: -1
+
+on-melee-attack:
+  modifier:
+    damage: '{original} * (1.2 + {level} / 50)'

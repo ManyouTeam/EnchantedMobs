@@ -1,0 +1,28 @@
+# PotionCloudDeath
+# The poisonous effect of the potion cloud generated after death
+# 死亡后生成中毒效果的药水云。
+
+enabled: true
+placeholder: '{lang:power.potion_cloud_death}'
+
+apply-rules:
+  group: death
+  group-unique: true
+  weight: 21
+  level-weight: 24
+  match-entity:
+    any: true
+
+limit:
+  random: 1
+  cooldown: -1
+
+on-death:
+  abilities:
+    1:
+      type: potion_cloud
+      potion: POISON
+      radius: 3.0
+      duration: 120
+      potion-duration: 100
+      potion-amplifier: 1

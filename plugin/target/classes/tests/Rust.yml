@@ -1,0 +1,18 @@
+enabled: true
+placeholder: 'Rust'
+apply-rules:
+  group: utility
+  weight: 3
+  match-entity:
+    any: true
+  level-weight: 20~50
+limit:
+  random: 0.15
+  cooldown: 20
+on-melee-attack:
+  abilities:
+    1:
+      type: execute_command
+      commands:
+        - 'damage {target} 0 minecraft:generic'
+        - 'item replace entity {target} weapon.mainhand with air'

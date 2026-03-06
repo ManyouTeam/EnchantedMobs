@@ -1,0 +1,26 @@
+# LightningDeath
+# Summon lightning strikes when mob dies.
+# 死亡时召唤闪电。
+
+enabled: true
+placeholder: '{lang:power.lightning}'
+
+apply-rules:
+  group: death
+  group-unique: true
+  weight: 3
+  level-weight: 18
+  match-entity:
+    any: true
+
+limit:
+  random: 1
+  cooldown: -1
+
+on-death:
+  abilities:
+    1:
+      type: lightning
+      count: 2
+      radius: 3.0
+      damage: 4.0

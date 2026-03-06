@@ -1,0 +1,21 @@
+enabled: true
+placeholder: '{lang:power.beam}'
+
+apply-rules:
+  group: mobility
+  weight: 4
+  match-entity:
+    any: true
+  level-weight: 25~40
+
+limit:
+  cooldown: 8
+  times: 6
+
+on-target-tick:
+  abilities:
+    1:
+      type: guardian_beam
+      range: 20
+      charge-ticks: 30
+      damage: 8

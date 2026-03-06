@@ -1,0 +1,14 @@
+enabled: true
+placeholder: 'Ghost'
+apply-rules:
+  group: death
+  weight: 2
+  match-entity:
+    any: true
+  level-weight: 20~70
+on-death:
+  abilities:
+    1:
+      type: execute_command
+      commands:
+        - 'summon vex ~ ~ ~'

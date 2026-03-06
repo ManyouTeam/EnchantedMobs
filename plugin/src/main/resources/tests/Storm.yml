@@ -1,0 +1,17 @@
+enabled: true
+placeholder: 'Storm'
+apply-rules:
+  group: ranged_magic
+  weight: 2
+  match-entity:
+    any: true
+  level-weight: 30~80
+on-target:
+  abilities:
+    1:
+      type: limit
+      random: 0.12
+      cooldown: 12
+      abilities:
+        1:
+          type: lightning

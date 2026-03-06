@@ -1,0 +1,15 @@
+enabled: true
+placeholder: 'Sapper'
+apply-rules:
+  group: debuff_melee
+  weight: 5
+  match-entity:
+    any: true
+  level-weight: 10~35
+on-melee-attack:
+  abilities:
+    1:
+      type: potion_effect
+      potion: HUNGER
+      duration: 120
+      amplifier: 1

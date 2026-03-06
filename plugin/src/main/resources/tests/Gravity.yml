@@ -1,0 +1,15 @@
+enabled: true
+placeholder: 'Gravity'
+apply-rules:
+  group: control
+  weight: 2
+  match-entity:
+    any: true
+  level-weight: 30~80
+on-melee-attack:
+  abilities:
+    1:
+      type: potion_effect
+      potion: LEVITATION
+      duration: 60
+      amplifier: 0

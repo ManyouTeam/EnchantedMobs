@@ -1,0 +1,20 @@
+enabled: true
+placeholder: 'Vengeance'
+apply-rules:
+  group: reactive
+  weight: 4
+  match-entity:
+    any: true
+  level-weight: 20~55
+on-damage:
+  abilities:
+    1:
+      type: limit
+      random: 0.35
+      cooldown: 6
+      abilities:
+        1:
+          type: execute_command
+          mode: target-player
+          commands:
+            - 'damage {target} 2 minecraft:thorns'

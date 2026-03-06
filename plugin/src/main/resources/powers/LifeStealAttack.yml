@@ -1,0 +1,28 @@
+# LifeStealAttack
+# Heal attacker and optionally deal extra damage on melee attacks.
+# 近战攻击时吸血并可额外伤害。
+
+enabled: true
+placeholder: '{lang:power.lifesteal}'
+
+apply-rules:
+  group: melee_control
+  weight: 14
+  level-weight: 22
+  match-entity:
+    ranged: false
+
+limit:
+  random: 0.4
+  cooldown: 3
+
+on-melee-attack:
+  conditions:
+    min-damage: 0.1
+  modifier:
+    damage: '{original} + ({level} / 200)'
+  abilities:
+    1:
+      type: set_health
+      target: source
+      amount: '{health} + 1 + {level} / 50'

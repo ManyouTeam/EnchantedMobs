@@ -1,0 +1,15 @@
+enabled: true
+placeholder: 'Ender'
+apply-rules:
+  group: movement
+  weight: 4
+  match-entity:
+    any: true
+  level-weight: 20~55
+on-target:
+  abilities:
+    1:
+      type: teleport_near_target
+      chance: 0.25
+      min-distance: 2
+      max-distance: 6

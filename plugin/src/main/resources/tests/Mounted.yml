@@ -1,0 +1,15 @@
+enabled: true
+placeholder: 'Mounted'
+apply-rules:
+  group: summon
+  group-unique: true
+  weight: 2
+  match-entity:
+    any: true
+  level-weight: 20~80
+on-spawn:
+  abilities:
+    1:
+      type: execute_command
+      commands:
+        - 'summon spider ~ ~ ~ {Passengers:[{id:"minecraft:zombie"}]}'

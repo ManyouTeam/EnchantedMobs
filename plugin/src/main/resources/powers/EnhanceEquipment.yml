@@ -1,0 +1,32 @@
+# Armed
+# 穿戴非常牛逼的装备。
+
+enabled: true
+placeholder: '{lang:power.armed}'
+
+apply-rules:
+  group: gear_upgrade
+  group-unique: true
+  weight: 7
+  match-entity:
+    entity-tag:
+      - 'zombies'
+      - 'skeletons'
+      - 'illager'
+  level-weight: 30~45
+
+on-spawn:
+  abilities:
+    1:
+      type: enhance_equipment
+      armor-material: NETHERITE
+      pieces:
+        - HELMET
+        - CHESTPLATE
+        - LEGGINGS
+        - BOOTS
+      enchant:
+        min-amount: 1
+        max-amount: 3
+        min-level: 1
+        max-level: 5

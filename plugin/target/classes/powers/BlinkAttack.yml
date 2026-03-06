@@ -1,0 +1,30 @@
+# BlinkAttack
+# 受到伤害时随机传送到其他位置。
+
+enabled: true
+placeholder: '{lang:power.blink}'
+
+apply-rules:
+  group: mobility
+  weight: 6
+  match-entity:
+    any: true
+  level-weight: 16~28
+
+on-target:
+  abilities:
+    1:
+      type: teleport_near_target
+      min-radius: 2
+      max-radius: 6
+      max-tries: 10
+
+on-damage:
+  cooldown: '5 - {level} / 10'
+  abilities:
+    1:
+      type: teleport_near_target
+      min-radius: 2
+      max-radius: 6
+      max-tries: 10
+      target: target

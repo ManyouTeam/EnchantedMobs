@@ -1,0 +1,16 @@
+enabled: true
+placeholder: 'Sprint'
+apply-rules:
+  group: movement
+  group-unique: true
+  weight: 5
+  match-entity:
+    any: true
+  level-weight: 8~25
+on-spawn:
+  abilities:
+    1:
+      type: set_attribute
+      target: SOURCE
+      attribute: GENERIC_MOVEMENT_SPEED
+      value: '{original} * 1.35'
