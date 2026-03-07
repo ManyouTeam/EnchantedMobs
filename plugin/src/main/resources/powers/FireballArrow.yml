@@ -1,3 +1,5 @@
+# 发射火球
+
 enabled: true
 placeholder: '{lang:power.fireball_shot}'
 
@@ -7,7 +9,7 @@ apply-rules:
   weight: 5
   match-entity:
     ranged: true
-  level-weight: 28~40
+  level-weight: 28
 
 limit:
   random: 1

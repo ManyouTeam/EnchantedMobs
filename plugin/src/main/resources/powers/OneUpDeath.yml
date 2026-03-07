@@ -1,4 +1,3 @@
-# OneUp
 # 死亡后复活。
 
 enabled: true
@@ -10,10 +9,7 @@ apply-rules:
   weight: 14
   level-weight: 30
   match-entity:
-    entity-tag:
-      - 'arthropod'
-      - 'undead'
-      - 'illager'
+    any: true
 
 limit:
   random: 1
@@ -21,5 +17,5 @@ limit:
 
 on-death:
   modifier:
-    revive-health: '{original} / 2'
+    modifier: '{original} * (1.4 + {level} / 90)'
 

@@ -1,12 +1,12 @@
+# 潜行隐匿型：常驻隐身提升突袭性。
 enabled: true
-placeholder: 'Cloaked'
+placeholder: '{lang:power.cloaked}'
 apply-rules:
-  group: utility
-  group-unique: true
+  group: potion
   weight: 2
   match-entity:
     any: true
-  level-weight: 20~50
+  level-weight: 20
 on-spawn:
   abilities:
     1:

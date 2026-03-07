@@ -1,5 +1,3 @@
-# SunImmunity
-# Undead creatures will not burn during the day.
 # 亡灵生物将不会在白天燃烧。
 
 enabled: true
@@ -7,11 +5,11 @@ placeholder: '{lang:power.sun_immunity}'
 
 apply-rules:
   group: misc
-  weight: 34
+  weight: 68
   match-entity:
     entity-tag:
       - 'burn_in_daylight'
-  level-weight: 5
+  level-weight: 1
 
 limit:
   random: 1

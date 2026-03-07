@@ -16,10 +16,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -212,5 +209,13 @@ public class CommonUtil {
             return maxHealth.getValue();
         }
         return 0;
+    }
+
+    public static Set<Integer> arrayToSet(int... numbers) {
+        Set<Integer> set = new HashSet<>();
+        for (int num : numbers) {
+            set.add(num);
+        }
+        return set;
     }
 }

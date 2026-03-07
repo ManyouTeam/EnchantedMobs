@@ -1,5 +1,7 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
+import cn.superiormc.enchantedmobs.utils.CommonUtil;
+import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,7 +24,10 @@ public class SetAttributeAbility extends AbstractAbility {
             return false;
         }
         try {
-            Attribute attribute = Attribute.valueOf(section.getString("attribute", "MAX_HEALTH").toUpperCase());
+            Attribute attribute = Registry.ATTRIBUTE.get(CommonUtil.parseNamespacedKey(section.getString("attribute", "max_health")));
+            if (attribute == null) {
+                return false;
+            }
             AttributeInstance instance = living.getAttribute(attribute);
             if (instance != null) {
                 double maxValue = instance.getAttribute().equals(Attribute.MAX_HEALTH)

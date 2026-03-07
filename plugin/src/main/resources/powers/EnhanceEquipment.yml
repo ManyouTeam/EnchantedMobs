@@ -1,12 +1,10 @@
-# Armed
 # 穿戴非常牛逼的装备。
 
 enabled: true
 placeholder: '{lang:power.armed}'
 
 apply-rules:
-  group: gear_upgrade
-  group-unique: true
+  group: defense
   weight: 7
   match-entity:
     entity-tag:

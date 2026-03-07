@@ -1,5 +1,3 @@
-# ShuffleInventoryAttack
-# Shuffle player's hotbar/backpack slots when hit by melee.
 # 近战命中时打乱玩家背包栏位。
 
 enabled: true
@@ -9,8 +7,11 @@ apply-rules:
   group: melee_control
   weight: 5
   match-entity:
-    any: true
-  level-weight: 20~40
+    ranged: false
+    not:
+      entity-types:
+        - CREEPER
+  level-weight: 14
 
 limit:
   random: 0.2

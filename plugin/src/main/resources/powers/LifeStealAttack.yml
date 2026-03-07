@@ -1,5 +1,3 @@
-# LifeStealAttack
-# Heal attacker and optionally deal extra damage on melee attacks.
 # 近战攻击时吸血并可额外伤害。
 
 enabled: true
@@ -11,6 +9,9 @@ apply-rules:
   level-weight: 22
   match-entity:
     ranged: false
+    not:
+      entity-types:
+        - CREEPER
 
 limit:
   random: 0.4

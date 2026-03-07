@@ -1,0 +1,32 @@
+# 复合减益型：近战命中后按等级施加多种负面状态。
+enabled: true
+placeholder: '{lang:power.debuffer}'
+apply-rules:
+  group: debuff_melee
+  weight: 8
+  match-entity:
+    ranged: false
+    not:
+      entity-types:
+        - CREEPER
+  level-weight: 12~65
+limit:
+  random: '0.12 + {level} / 320'
+  cooldown: '12 - {level} / 12'
+on-melee-attack:
+  abilities:
+    1:
+      type: potion_effect
+      potion: POISON
+      duration: '{level} * 2 + 30'
+      amplifier: 0
+    2:
+      type: potion_effect
+      potion: WEAKNESS
+      duration: '{level} * 2 + 30'
+      amplifier: 0
+    3:
+      type: potion_effect
+      potion: SLOWNESS
+      duration: '{level} * 2 + 20'
+      amplifier: 0

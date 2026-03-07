@@ -4,6 +4,9 @@ import com.google.common.base.Enums;
 import org.bukkit.EntityEffect;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
+import java.lang.reflect.Method;
 
 public class VanillaAnimationAbility extends AbstractAbility {
 

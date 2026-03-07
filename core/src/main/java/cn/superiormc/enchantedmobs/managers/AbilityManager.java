@@ -99,6 +99,7 @@ public class AbilityManager {
         registerAbilityParser("send_message", SendMessageAbility::new);
         registerAbilityParser("execute_command", ExecuteCommandAbility::new);
         registerAbilityParser("limit", LimitAbility::new);
+        registerAbilityParser("mythic_skill", MythicSkillAbility::new);
     }
 
     private String normalizeAbilityType(String type) {

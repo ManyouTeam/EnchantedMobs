@@ -1,5 +1,3 @@
-# Web Trap
-# The projectile launched by a monster with this ability will generate a temporary spider web upon landing.
 # 有此能力的怪物射出的抛掷物落地后将会生成临时蜘蛛网。
 
 enabled: true

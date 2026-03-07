@@ -1,17 +1,19 @@
+# 让玩家浮空
+
 enabled: true
 placeholder: 'Flying'
 apply-rules:
-  group: movement
+  group: potion
   group-unique: true
   weight: 1
   match-entity:
     any: true
-  level-weight: 35~100
-on-spawn:
+  level-weight: 35
+on-target:
   abilities:
     1:
       type: potion_effect
-      target: SOURCE
+      target: target
       potion: LEVITATION
-      duration: 999999
+      duration: '{level}'
       amplifier: 0

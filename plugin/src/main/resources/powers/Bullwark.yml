@@ -1,12 +1,13 @@
+# 肉盾减伤型：常驻抗性提升生存能力。
+
 enabled: true
-placeholder: 'Bullwark'
+placeholder: '{lang:power.bullwark}'
 apply-rules:
   group: defence
-  group-unique: true
   weight: 3
   match-entity:
     any: true
-  level-weight: 20~60
+  level-weight: 20
 on-spawn:
   abilities:
     1:

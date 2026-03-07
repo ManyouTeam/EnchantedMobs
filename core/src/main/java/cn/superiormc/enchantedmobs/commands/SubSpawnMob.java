@@ -91,7 +91,7 @@ public class SubSpawnMob extends AbstractCommand {
             LanguageManager.languageManager.sendStringText(player, "error.entity-invalid");
             return;
         }
-        Bukkit.getConsoleSender().sendMessage("666");
+        //Bukkit.getConsoleSender().sendMessage("666");
         EntityScannerManager.entityScannerManager.setEntityPowers(living, powers, level);
         LanguageManager.languageManager.sendStringText(player, "mob-spawned");
     }

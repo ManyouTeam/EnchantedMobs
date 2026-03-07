@@ -2,6 +2,7 @@ package cn.superiormc.enchantedmobs.paper.listener;
 
 import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.PlayerPowerManager;
+import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ public class PaperPlayerPowerListener extends PlayerPowerManager implements List
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerInventorySlotChangeEvent event) {
-        PlayerPowerManager.playerPowerManager.updateChangedSlots(event.getPlayer(), Set.of(event.getRawSlot(), event.getSlot()));
+        PlayerPowerManager.playerPowerManager.updateChangedSlots(event.getPlayer(), CommonUtil.arrayToSet(event.getRawSlot(), event.getSlot()));
     }
 
 }

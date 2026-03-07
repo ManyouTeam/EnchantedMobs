@@ -1,4 +1,3 @@
-# TNT Arrow
 # 发射的不是箭而是TNT。
 
 enabled: true
@@ -10,7 +9,7 @@ apply-rules:
   weight: 3
   match-entity:
     ranged: true
-  level-weight: 24~35
+  level-weight: 35
 
 on-shoot-bow:
   modifier:

@@ -1,5 +1,3 @@
-# HealthMultiplier
-# Multiply max health on spawn.
 # 生成时增加最大生命值。
 
 enabled: true

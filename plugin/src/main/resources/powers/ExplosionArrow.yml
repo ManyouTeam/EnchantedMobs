@@ -1,5 +1,3 @@
-# Explosion Trap
-# The projectile launched by a monster with this ability will execute explosion.
 # 有此能力的怪物射出的抛掷物落地后将会爆炸。
 
 enabled: true

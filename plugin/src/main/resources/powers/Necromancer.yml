@@ -1,0 +1,20 @@
+# 死灵远程型：周期性发射凋灵骷髅头。
+enabled: true
+placeholder: '{lang:power.necromancer}'
+apply-rules:
+  group: misc
+  weight: 2
+  match-entity:
+    any: true
+  level-weight: 35~90
+on-target-tick:
+  abilities:
+    1:
+      type: limit
+      random: '0.08 + {level} / 450'
+      cooldown: '12 - {level} / 10'
+      abilities:
+        1:
+          type: launch_projectile
+          entity-type: WITHER_SKULL
+          speed: '0.85 + {level} / 250'

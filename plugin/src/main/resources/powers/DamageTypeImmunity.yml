@@ -1,3 +1,5 @@
+# 只能近战造成伤害。
+
 enabled: true
 placeholder: '{lang:power.damage_immunity}'
 
@@ -10,9 +12,12 @@ apply-rules:
 
 on-damage:
   conditions:
-    # 可选伤害类型：FIRE、LAVA、FALL、PROJECTILE、MAGIC...
     damage-cause:
       - FIRE
+      - LAVA
+      - FALL
+      - PROJECTILE
+      - MAGIC
   abilities:
     1:
       type: cancel_event

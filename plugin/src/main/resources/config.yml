@@ -32,8 +32,12 @@ mob-power-generator:
   spawn-chance: '20~45'
   player-scan-range: 48
   disabled-worlds: []
+  # Ghost, Slime and Ender Dragon are disabled by default and can not being changed.
+  # All peaceful mobs are disabled by default and can not being changed.
   disabled-entity:
-    none: true
+    entity-types:
+      - WARDEN
+      - WITHER
 
 mob-display:
   name:

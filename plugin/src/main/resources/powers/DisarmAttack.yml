@@ -1,5 +1,3 @@
-# DisarmAttack
-# Disarm player when hit by melee.
 # 近战命中时缴械玩家主手。
 
 enabled: true
@@ -9,7 +7,10 @@ apply-rules:
   group: melee_control
   weight: 7
   match-entity:
-    any: true
+    ranged: false
+    not:
+      entity-types:
+        - CREEPER
   level-weight: 15~30
 
 limit:

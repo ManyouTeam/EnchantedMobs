@@ -1,5 +1,6 @@
+# 追击冲锋型：出生时提升移动速度。
 enabled: true
-placeholder: 'Sprint'
+placeholder: '{lang:power.sprint}'
 apply-rules:
   group: movement
   group-unique: true
@@ -12,5 +13,5 @@ on-spawn:
     1:
       type: set_attribute
       target: SOURCE
-      attribute: GENERIC_MOVEMENT_SPEED
-      value: '{original} * 1.35'
+      attribute: MOVEMENT_SPEED
+      value: '{now} * (1.2 + {level} / 250)'

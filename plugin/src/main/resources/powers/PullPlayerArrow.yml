@@ -1,5 +1,3 @@
-# PullPlayerAttack
-# Pull attacked player toward the mob.
 # 远程命中时将玩家拉向怪物。
 
 enabled: true

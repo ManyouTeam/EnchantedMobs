@@ -1,6 +1,4 @@
-formula: "{equipment_sum} + ({backpack_max} + {backpack_avg}) / 2"
-# true: 仅重算变化槽位（高性能）
-# false: 每次背包变化全量重算（兼容模式）
+formula: "{equipment_sum} + {backpack_max} * 0.8 + {backpack_avg} * 0.2"
 incremental-slot-update: true
 
 rules:
@@ -8,9 +6,48 @@ rules:
     match-item:
       material:
         - DIAMOND_SWORD
-    add-weight: 10
-  armor:
+    add-weight: 18
+  netherite-sword:
     match-item:
-      material-tag:
-        - 'enchantable/armor'
-    add-weight: 12
+      material:
+        - NETHERITE_SWORD
+    add-weight: 45
+  diamond-armor:
+    match-item:
+      material:
+        - DIAMOND_HELMET
+        - DIAMOND_CHESTPLATE
+        - DIAMOND_LEGGINGS
+        - DIAMOND_BOOTS
+    add-weight: 24
+  netherite-armor:
+    match-item:
+      material:
+        - NETHERITE_HELMET
+        - NETHERITE_CHESTPLATE
+        - NETHERITE_LEGGINGS
+        - NETHERITE_BOOTS
+    add-weight: 60
+  shield:
+    match-item:
+      material:
+        - SHIELD
+    add-weight: 10
+  enchanted-medium:
+    match-item:
+      contains-enchants-amount:
+        - 3
+        - 4
+    add-weight: 10
+  enchanted-low:
+    match-item:
+      contains-enchants-amount: 1
+    add-weight: 5
+  enchanted-common:
+    match-item:
+      contains-enchants-amount: 3
+    add-weight: 10
+  enchanted-high:
+    match-item:
+      contains-enchants-amount: 5
+    add-weight: 20

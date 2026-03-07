@@ -2,6 +2,7 @@ package cn.superiormc.enchantedmobs.objects.ability;
 
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import com.google.common.base.Enums;
+import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -20,8 +21,8 @@ public class PotionEffectAbility extends AbstractAbility {
         if (!(target instanceof LivingEntity living)) {
             return false;
         }
-        String effectKey = getString("effect", "SLOWNESS");
-        PotionEffectType type = PotionEffectType.getByKey(CommonUtil.parseNamespacedKey(effectKey));
+        String effectKey = getString("potion", "SLOWNESS");
+        PotionEffectType type = Registry.EFFECT.get(CommonUtil.parseNamespacedKey(effectKey));
         if (type == null) {
             return false;
         }

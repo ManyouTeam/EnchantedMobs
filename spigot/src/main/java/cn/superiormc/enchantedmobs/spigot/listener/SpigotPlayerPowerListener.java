@@ -2,6 +2,7 @@ package cn.superiormc.enchantedmobs.spigot.listener;
 
 import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.PlayerPowerManager;
+import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,7 +43,7 @@ public class SpigotPlayerPowerListener extends PlayerPowerManager implements Lis
         if (!(event.getClickedInventory() instanceof PlayerInventory)) {
             return;
         }
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> PlayerPowerManager.playerPowerManager.updateChangedSlots(player, Set.of(event.getRawSlot(), event.getSlot())), 1L);
+        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> PlayerPowerManager.playerPowerManager.updateChangedSlots(player, CommonUtil.arrayToSet(event.getRawSlot(), event.getSlot())), 1L);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -66,6 +67,6 @@ public class SpigotPlayerPowerListener extends PlayerPowerManager implements Lis
         if (!(event.getInventory() instanceof PlayerInventory)) {
             return;
         }
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> PlayerPowerManager.playerPowerManager.updateChangedSlots(player, Set.of(event.getRawSlot(), event.getSlot())), 1L);
+        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> PlayerPowerManager.playerPowerManager.updateChangedSlots(player, CommonUtil.arrayToSet(event.getRawSlot(), event.getSlot())), 1L);
     }
 }

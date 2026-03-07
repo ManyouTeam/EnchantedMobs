@@ -1,0 +1,21 @@
+# 击飞控制型：近战命中后概率强力抛投目标。
+enabled: true
+placeholder: '{lang:power.tosser}'
+apply-rules:
+  group: misc
+  weight: 4
+  match-entity:
+    ranged: false
+    not:
+      entity-types:
+        - CREEPER
+  level-weight: 18~40
+limit:
+  random: '0.15 + {level} / 350'
+  cooldown: '12 - {level} / 12'
+on-melee-attack:
+  abilities:
+    1:
+      type: pull_target
+      speed: '-1.0 - {level} / 120'
+      vertical: '0.4 + {level} / 200'

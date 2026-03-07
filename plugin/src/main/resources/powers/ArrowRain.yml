@@ -1,12 +1,10 @@
-# Arrow Rain
-# Summons arrows from above target area.
 # 在目标区域上空召唤箭雨。
 
 enabled: true
 placeholder: '{lang:power.arrow_rain}'
 
 apply-rules:
-  group: ranged_projectile
+  group: mobility
   weight: 4
   match-entity:
     ranged: true

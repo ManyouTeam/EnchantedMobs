@@ -1,0 +1,21 @@
+# 狂暴反击型：近战输出和受击反伤同时提升。
+enabled: true
+placeholder: '{lang:power.berserk}'
+apply-rules:
+  group: defense
+  weight: 3
+  match-entity:
+    ranged: false
+    not:
+      entity-types:
+        - CREEPER
+  level-weight: 25~65
+on-melee-attack:
+  modifier:
+    damage: '{original} * (1.25 + {level} / 160)'
+on-damage:
+  conditions:
+    damage-cause:
+      - ENTITY_ATTACK
+  modifier:
+    damage: '{original} * (1.1 + {level} / 240)'

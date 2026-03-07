@@ -1,5 +1,3 @@
-# PotionCloudDeath
-# The poisonous effect of the potion cloud generated after death
 # 死亡后生成中毒效果的药水云。
 
 enabled: true
