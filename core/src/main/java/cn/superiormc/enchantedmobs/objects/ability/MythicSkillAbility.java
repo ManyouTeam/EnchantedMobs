@@ -45,6 +45,7 @@ public class MythicSkillAbility extends AbstractAbility {
             tempVal1.add(target);
             Collection<Location> tempVal2 = new HashSet<>();
             tempVal2.add(getLocation(context));
+            //MythicBukkit.inst().getAPIHelper().castSkill(caster, skill, getLocation(context), power);
             MythicBukkit.inst().getAPIHelper().castSkill(caster, skill, target, getLocation(context), tempVal1, tempVal2, power);
         }
         return false;

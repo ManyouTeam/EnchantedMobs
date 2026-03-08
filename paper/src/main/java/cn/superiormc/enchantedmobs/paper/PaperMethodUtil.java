@@ -260,6 +260,11 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
+    public void setEntityName(LivingEntity entity, String name) {
+        entity.customName(PaperTextUtil.modernParse(name));
+    }
+
+    @Override
     public void dropPrivateItem(Player player, ItemStack itemStack, Location loc) {
         if (!CommonUtil.getMinorVersion(19, 1)) {
             return;

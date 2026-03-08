@@ -1,6 +1,7 @@
 package cn.superiormc.enchantedmobs.managers;
 
 import cn.superiormc.enchantedmobs.objects.ability.*;
+import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -87,6 +88,7 @@ public class AbilityManager {
         registerAbilityParser("fire", FireAbility::new);
         registerAbilityParser("homing_projectile", HomingProjectileAbility::new);
         registerAbilityParser("teleport_near_target", TeleportNearTargetAbility::new);
+        registerAbilityParser("artillery", ArtilleryAbility::new);
         registerAbilityParser("guardian_beam", GuardianBeamAbility::new);
         registerAbilityParser("vanilla_animation", VanillaAnimationAbility::new);
         registerAbilityParser("arrow_rain", ArrowRainAbility::new);

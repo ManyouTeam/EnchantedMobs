@@ -107,7 +107,8 @@ public class PowerManager {
                 float progress = (float) Math.max(0, Math.min(1, living.getHealth() / maxHealth));
 
                 String parsed = title
-                        .replace("{entity}", getBossBarEntityName(living))
+                        .replace("{entity}", getBossBarEntityName(living, player))
+                        .replace("{mob}", EnchantedMobs.methodUtil.getEntityName(living))
                         .replace("{health}", String.format(Locale.US, "%.1f", living.getHealth()))
                         .replace("{max-health}", String.format(Locale.US, "%.1f", maxHealth))
                         .replace("{powers_full}", powersFull);
@@ -116,6 +117,11 @@ public class PowerManager {
             }
             hideStaleMobBossBars(player, visibleKeys);
         }
+    }
+
+    private String getBossBarEntityName(LivingEntity entity, Player player) {
+        String langKey = "override-lang.entity." + entity.getType().name().toLowerCase(Locale.ROOT);
+        return LanguageManager.languageManager.getStringText(player, langKey, entity.getType().name());
     }
 
     private void hideStaleMobBossBars(Player player, Set<String> visibleKeys) {
@@ -139,11 +145,6 @@ public class PowerManager {
     public void registerNewPower(String id, ObjectPower power) {
         powers.put(id, power);
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded power: " + id + "!");
-    }
-
-    public int getChunkAveragePlayerPower(Chunk chunk) {
-        return getNearbyAveragePlayerPower(chunk.getWorld(), chunk.getX() * 16 + 8, chunk.getZ() * 16 + 8,
-                ConfigManager.configManager.getInt("mob-power-generator.player-scan-range", 48));
     }
 
     public int getNearbyAveragePlayerPower(Location location, double range) {
@@ -369,7 +370,7 @@ public class PowerManager {
                 .replace("{powers}", powersText)
                 .replace("{mob}", EnchantedMobs.methodUtil.getEntityName(living));
 
-        living.setCustomName(TextUtil.parse(displayName));
+        EnchantedMobs.methodUtil.setEntityName(living, displayName);
         living.setCustomNameVisible(true);
     }
 
@@ -391,22 +392,6 @@ public class PowerManager {
 
     private String separatorFromConfig() {
         return ConfigManager.configManager.getString("mob-display.name.separator", ", ");
-    }
-
-    private String getBossBarEntityName(LivingEntity entity) {
-        String raw = entity.getType().name().toLowerCase(Locale.ROOT).replace('_', ' ');
-        String[] words = raw.split(" ");
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < words.length; i++) {
-            if (words[i].isEmpty()) {
-                continue;
-            }
-            builder.append(Character.toUpperCase(words[i].charAt(0))).append(words[i].substring(1));
-            if (i < words.length - 1) {
-                builder.append(' ');
-            }
-        }
-        return builder.toString();
     }
 
     private int parseLevelWeight(Object rawWeight, int defaultValue) {

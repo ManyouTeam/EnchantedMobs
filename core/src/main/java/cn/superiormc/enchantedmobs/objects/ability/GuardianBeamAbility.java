@@ -1,14 +1,14 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
 import cn.superiormc.enchantedmobs.EnchantedMobs;
+import fr.skytasul.guardianbeam.Laser;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 public class GuardianBeamAbility extends AbstractAbility {
 
@@ -25,47 +25,78 @@ public class GuardianBeamAbility extends AbstractAbility {
         }
 
         double range = getDouble("range", 18.0, context.level());
-        if (!caster.getWorld().equals(victim.getWorld()) || caster.getLocation().distanceSquared(victim.getLocation()) > range * range) {
+        if (!caster.getWorld().equals(victim.getWorld())
+                || caster.getLocation().distanceSquared(victim.getLocation()) > range * range) {
             return false;
         }
 
         int chargeTicks = Math.max(1, getInt("charge-ticks", 30, context.level()));
         double damage = Math.max(0.0, getDouble("damage", 6.0, context.level()));
+        Location start = caster.getEyeLocation();
 
-        new BukkitRunnable() {
-            int tick = 0;
+        try {
+            Laser laser = new Laser.GuardianLaser(
+                        start,
+                        victim,
+                        chargeTicks,
+                        (int) Math.ceil(range)
+                ).durationInTicks();
 
-            @Override
-            public void run() {
-                if (!caster.isValid() || !victim.isValid() || victim.isDead() || caster.getWorld() != victim.getWorld()) {
-                    cancel();
+            laser.executeEnd(() -> {
+                if (!caster.isValid() || !victim.isValid() || victim.isDead()) {
+                    return;
+                }
+                if (!caster.getWorld().equals(victim.getWorld())) {
+                    return;
+                }
+                if (caster.getLocation().distanceSquared(victim.getLocation()) > range * range) {
                     return;
                 }
 
-                drawBeam(caster.getEyeLocation(), victim.getEyeLocation());
-                if (++tick < chargeTicks) {
-                    return;
+                Bukkit.getScheduler().runTask(EnchantedMobs.instance, () -> {
+                    victim.damage(damage, caster);
+                    victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GUARDIAN_ATTACK, 1f, 1f);
+                });
+            });
+
+            laser.start(EnchantedMobs.instance);
+
+            // 持续让激光起点跟随施法者眼睛位置
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (!laser.isStarted()) {
+                        cancel();
+                        return;
+                    }
+
+                    if (!caster.isValid() || caster.isDead() || !victim.isValid() || victim.isDead()) {
+                        laser.stop();
+                        cancel();
+                        return;
+                    }
+
+                    if (!caster.getWorld().equals(victim.getWorld())
+                            || caster.getLocation().distanceSquared(victim.getLocation()) > range * range) {
+                        laser.stop();
+                        cancel();
+                        return;
+                    }
+
+                    try {
+                        laser.moveStart(caster.getEyeLocation());
+                    } catch (ReflectiveOperationException e) {
+                        e.printStackTrace();
+                        laser.stop();
+                        cancel();
+                    }
                 }
+            }.runTaskTimer(EnchantedMobs.instance, 1L, 1L);
 
-                victim.damage(damage, caster);
-                victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GUARDIAN_ATTACK, 1f, 1f);
-                cancel();
-            }
-        }.runTaskTimer(EnchantedMobs.instance, 0L, 1L);
-        return false;
-    }
-
-    private void drawBeam(Location from, Location to) {
-        Vector path = to.toVector().subtract(from.toVector());
-        double length = path.length();
-        if (length <= 0.001) {
-            return;
-        }
-        Vector step = path.normalize().multiply(0.5);
-        Location cursor = from.clone();
-        for (double i = 0; i < length; i += 0.5) {
-            from.getWorld().spawnParticle(Particle.END_ROD, cursor, 1, 0, 0, 0, 0);
-            cursor.add(step);
+            return false;
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

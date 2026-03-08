@@ -261,6 +261,11 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
+    public void setEntityName(LivingEntity entity, String name) {
+        entity.setCustomName(TextUtil.parse(name));
+    }
+
+    @Override
     public void tempBlockManager() {
         new SpigotTempBlockListener();
     }
