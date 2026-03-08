@@ -24,7 +24,6 @@ public class PlayerPowerManager implements Listener {
     private static final int OFFHAND_SLOT = 40;
     private static final int BACKPACK_SLOT_COUNT = 36;
 
-    private final Map<UUID, ItemStack[]> snapshots = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> playerPower = new ConcurrentHashMap<>();
     private final Map<UUID, PlayerCache> playerCaches = new ConcurrentHashMap<>();
     private final List<PowerStatRule> rules = new ArrayList<>();
@@ -34,6 +33,15 @@ public class PlayerPowerManager implements Listener {
 
     protected PlayerPowerManager() {
         playerPowerManager = this;
+        loadRules();
+    }
+
+    public void reload() {
+        playerPower.clear();
+        playerCaches.clear();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            initPlayer(player);
+        }
         loadRules();
     }
 

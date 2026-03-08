@@ -1,10 +1,7 @@
 package cn.superiormc.enchantedmobs.commands;
 
 import cn.superiormc.enchantedmobs.EnchantedMobs;
-import cn.superiormc.enchantedmobs.managers.ConfigManager;
-import cn.superiormc.enchantedmobs.managers.ItemManager;
-import cn.superiormc.enchantedmobs.managers.LanguageManager;
-import cn.superiormc.enchantedmobs.managers.PowerManager;
+import cn.superiormc.enchantedmobs.managers.*;
 import org.bukkit.entity.Player;
 
 public class SubReload extends AbstractCommand {
@@ -24,7 +21,7 @@ public class SubReload extends AbstractCommand {
         new ItemManager();
         new LanguageManager();
         new PowerManager();
-        EnchantedMobs.methodUtil.playerPowerManager();
+        PlayerPowerManager.playerPowerManager.reload();
         LanguageManager.languageManager.sendStringText(player, "plugin.reloaded");
     }
 
@@ -36,7 +33,7 @@ public class SubReload extends AbstractCommand {
         new ItemManager();
         new LanguageManager();
         new PowerManager();
-        EnchantedMobs.methodUtil.playerPowerManager();
+        PlayerPowerManager.playerPowerManager.reload();
         LanguageManager.languageManager.sendStringText("plugin.reloaded");
     }
 }
