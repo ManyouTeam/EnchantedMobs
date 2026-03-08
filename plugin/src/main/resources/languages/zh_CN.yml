@@ -61,6 +61,8 @@ override-lang:
   power.necromancer: "死灵"
   power.sprint: "疾行"
   power.tosser: "抛投"
+  power.summoner: "召唤者"
+  power.creeper_expert: "苦力怕专家"
   entity.blaze: "烈焰人"
   entity.bogged: "沼骸"
   entity.breeze: "旋风人"

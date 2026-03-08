@@ -61,6 +61,8 @@ override-lang:
   power.necromancer: "Necromancer"
   power.sprint: "Sprint"
   power.tosser: "Tosser"
+  power.summoner: "Summoner"
+  power.creeper_expert: "Creeper Expert"
   entity.blaze: "Blaze"
   entity.bogged: "Bogged"
   entity.breeze: "Breeze"

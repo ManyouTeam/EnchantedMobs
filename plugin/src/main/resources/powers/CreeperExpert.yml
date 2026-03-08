@@ -1,0 +1,25 @@
+# 强化苦力怕爆炸参数。
+
+enabled: true
+placeholder: '{lang:power.creeper_expert}'
+
+apply-rules:
+  group: explosion
+  group-unique: false
+  weight: 8
+  level-weight: 20
+  match-entity:
+    entity-types:
+      - CREEPER
+
+limit:
+  random: 1
+  cooldown: -1
+
+on-spawn:
+  abilities:
+    1:
+      type: creeper_stats
+      explosion-radius: 5
+      fuse-ticks: 18
+      powered: false

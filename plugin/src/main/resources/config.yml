@@ -1,12 +1,14 @@
 # EnchantedMobs by @PQguanfang
 #
-# Read the Wiki here: https://manyou.gitbook.io/EnchantedMobs
+# Read the Wiki here: https://enchantedmobs.superiormc.cn
 
 debug: false
 debug-categories:
   spawn: true
   projectile: true
   ability: true
+# Require player has enchantedmobs.nodify permission to display.
+display-spawn-message: false
 
 optimize:
   enabled-projectile-tick: true
@@ -23,7 +25,6 @@ debuild-item-method: 'LEGACY'
 math:
   enabled: true
 
-# W.I.P.
 mob-power-generator:
   enabled: true
   ignore-custom-spawn: true
@@ -52,3 +53,7 @@ mob-display:
     color: 'RED'
     style: 'SOLID'
     title: '&c{entity} &7[{health}/{max-health}] &f{powers_full}'
+
+mob-combat:
+  # If true, damage between monsters will be cancelled.
+  disable-powered-mob-friendly-fire: false

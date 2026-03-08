@@ -1,0 +1,31 @@
+# 召唤小怪。
+
+enabled: true
+placeholder: '{lang:power.summoner}'
+
+apply-rules:
+  group: summon
+  group-unique: false
+  weight: 10
+  level-weight: 25
+  match-entity:
+    entity-tag:
+      - 'undead'
+      - 'illager'
+
+limit:
+  random: 1
+  cooldown: 8
+
+on-target-tick:
+  abilities:
+    1:
+      type: summon
+      random: 0.03
+      entity: zombie
+      location:
+        offset-x: '-2~2'
+        offset-z: '-2~2'
+      max-health: 24
+      health: 24
+      attack-damage: 5

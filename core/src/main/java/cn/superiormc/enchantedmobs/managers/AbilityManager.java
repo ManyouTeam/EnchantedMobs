@@ -102,6 +102,8 @@ public class AbilityManager {
         registerAbilityParser("execute_command", ExecuteCommandAbility::new);
         registerAbilityParser("limit", LimitAbility::new);
         registerAbilityParser("mythic_skill", MythicSkillAbility::new);
+        registerAbilityParser("summon", SummonAbility::new);
+        registerAbilityParser("creeper_stats", CreeperStatsAbility::new);
     }
 
     private String normalizeAbilityType(String type) {

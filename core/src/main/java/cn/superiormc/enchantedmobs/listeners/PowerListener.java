@@ -90,7 +90,7 @@ public class PowerListener implements Listener {
         String world = loc.getWorld() == null ? "unknown" : loc.getWorld().getName();
 
         for (Player player : entity.getWorld().getPlayers()) {
-            if (player.hasPermission("enchantedmobs.nodify") || player.hasPermission("enchantedmobs.notify")) {
+            if (player.hasPermission("enchantedmobs.nodify") && ConfigManager.configManager.getBoolean("display-spawn-message", false)) {
                 LanguageManager.languageManager.sendStringText(player,
                         "mob-powered-notify",
                         "world", world,
@@ -105,9 +105,23 @@ public class PowerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof Monster) {
-            PowerManager.powerManager.handleOnDamage(event);
+        if (!(entity instanceof Monster)) {
+            return;
         }
+
+        if (ConfigManager.configManager.getBoolean("mob-combat.disable-powered-mob-friendly-fire", false)
+                && event instanceof EntityDamageByEntityEvent damageByEntityEvent) {
+            Entity damager = EnchantedMobs.methodUtil.getDamager(damageByEntityEvent.getDamager());
+            if (damager == null) {
+                damager = damageByEntityEvent.getDamager();
+            }
+            if (damager instanceof Monster) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        PowerManager.powerManager.handleOnDamage(event);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -120,9 +134,17 @@ public class PowerListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMeleeAttack(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Monster) {
-            PowerManager.powerManager.handleMeleeAttack(event);
+        if (!(event.getDamager() instanceof Monster)) {
+            return;
         }
+
+        if (ConfigManager.configManager.getBoolean("mob-combat.disable-powered-mob-friendly-fire", false)
+                && event.getEntity() instanceof Monster) {
+            event.setCancelled(true);
+            return;
+        }
+
+        PowerManager.powerManager.handleMeleeAttack(event);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
