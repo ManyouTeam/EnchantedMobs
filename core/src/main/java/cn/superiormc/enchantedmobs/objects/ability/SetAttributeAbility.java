@@ -38,7 +38,7 @@ public class SetAttributeAbility extends AbstractAbility {
                         "max", String.valueOf(maxValue));
                 instance.setBaseValue(value);
                 if (instance.getAttribute().equals(Attribute.MAX_HEALTH)) {
-                    living.setHealth(Math.min(living.getHealth(), value));
+                    living.setHealth(Math.max(living.getHealth(), value));
                 }
             }
         } catch (IllegalArgumentException ignored) {

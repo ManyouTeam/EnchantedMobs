@@ -17,5 +17,6 @@ limit:
 on-spawn:
   abilities:
     1:
-      type: set_health
-      amount: '{health} * (1.2 + {level} / 50)'
+      type: set_attribute
+      attribute: max_health
+      value: '{max} * (1.2 + {level} / 50)'

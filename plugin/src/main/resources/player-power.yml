@@ -2,52 +2,385 @@ formula: "{equipment_sum} + {backpack_max} * 0.8 + {backpack_avg} * 0.2"
 incremental-slot-update: true
 
 rules:
-  diamond-sword:
+  wooden-sword:
     match-item:
       material:
-        - DIAMOND_SWORD
-    add-weight: 18
-  netherite-sword:
-    match-item:
-      material:
-        - NETHERITE_SWORD
-    add-weight: 45
-  diamond-armor:
-    match-item:
-      material:
-        - DIAMOND_HELMET
-        - DIAMOND_CHESTPLATE
-        - DIAMOND_LEGGINGS
-        - DIAMOND_BOOTS
-    add-weight: 24
-  netherite-armor:
-    match-item:
-      material:
-        - NETHERITE_HELMET
-        - NETHERITE_CHESTPLATE
-        - NETHERITE_LEGGINGS
-        - NETHERITE_BOOTS
-    add-weight: 60
-  shield:
-    match-item:
-      material:
-        - SHIELD
-    add-weight: 10
-  enchanted-medium:
-    match-item:
-      contains-enchants-amount:
-        - 3
-        - 4
-    add-weight: 10
-  enchanted-low:
-    match-item:
-      contains-enchants-amount: 1
+        - WOODEN_SWORD
     add-weight: 5
-  enchanted-common:
-    match-item:
-      contains-enchants-amount: 3
-    add-weight: 10
-  enchanted-high:
-    match-item:
-      contains-enchants-amount: 5
-    add-weight: 20
+
+    stone-sword:
+      match-item:
+        material:
+          - STONE_SWORD
+      add-weight: 10
+
+    golden-sword:
+      match-item:
+        material:
+          - GOLDEN_SWORD
+      add-weight: 15
+
+    iron-sword:
+      match-item:
+        material:
+          - IRON_SWORD
+      add-weight: 30
+
+    diamond-sword:
+      match-item:
+        material:
+          - DIAMOND_SWORD
+      add-weight: 50
+
+    netherite-sword:
+      match-item:
+        material:
+          - NETHERITE_SWORD
+      add-weight: 80
+
+    trident:
+      match-item:
+        material:
+          - TRIDENT
+      add-weight: 70
+
+    bow:
+      match-item:
+        material:
+          - BOW
+      add-weight: 35
+
+    crossbow:
+      match-item:
+        material:
+          - CROSSBOW
+      add-weight: 40
+
+    shield:
+      match-item:
+        material:
+          - SHIELD
+      add-weight: 15
+
+    leather-helmet:
+      match-item:
+        material:
+          - LEATHER_HELMET
+      add-weight: 5
+
+    leather-chestplate:
+      match-item:
+        material:
+          - LEATHER_CHESTPLATE
+      add-weight: 10
+
+    leather-leggings:
+      match-item:
+        material:
+          - LEATHER_LEGGINGS
+      add-weight: 8
+
+    leather-boots:
+      match-item:
+        material:
+          - LEATHER_BOOTS
+      add-weight: 7
+
+    golden-helmet:
+      match-item:
+        material:
+          - GOLDEN_HELMET
+      add-weight: 10
+
+    golden-chestplate:
+      match-item:
+        material:
+          - GOLDEN_CHESTPLATE
+      add-weight: 20
+
+    golden-leggings:
+      match-item:
+        material:
+          - GOLDEN_LEGGINGS
+      add-weight: 18
+
+    golden-boots:
+      match-item:
+        material:
+          - GOLDEN_BOOTS
+      add-weight: 15
+
+    chainmail-helmet:
+      match-item:
+        material:
+          - CHAINMAIL_HELMET
+      add-weight: 12
+
+    chainmail-chestplate:
+      match-item:
+        material:
+          - CHAINMAIL_CHESTPLATE
+      add-weight: 25
+
+    chainmail-leggings:
+      match-item:
+        material:
+          - CHAINMAIL_LEGGINGS
+      add-weight: 20
+
+    chainmail-boots:
+      match-item:
+        material:
+          - CHAINMAIL_BOOTS
+      add-weight: 18
+
+    iron-helmet:
+      match-item:
+        material:
+          - IRON_HELMET
+      add-weight: 15
+
+    iron-chestplate:
+      match-item:
+        material:
+          - IRON_CHESTPLATE
+      add-weight: 35
+
+    iron-leggings:
+      match-item:
+        material:
+          - IRON_LEGGINGS
+      add-weight: 30
+
+    iron-boots:
+      match-item:
+        material:
+          - IRON_BOOTS
+      add-weight: 25
+
+    diamond-helmet:
+      match-item:
+        material:
+          - DIAMOND_HELMET
+      add-weight: 20
+
+    diamond-chestplate:
+      match-item:
+        material:
+          - DIAMOND_CHESTPLATE
+      add-weight: 55
+
+    diamond-leggings:
+      match-item:
+        material:
+          - DIAMOND_LEGGINGS
+      add-weight: 40
+
+    diamond-boots:
+      match-item:
+        material:
+          - DIAMOND_BOOTS
+      add-weight: 35
+
+    netherite-helmet:
+      match-item:
+        material:
+          - NETHERITE_HELMET
+      add-weight: 30
+
+    netherite-chestplate:
+      match-item:
+        material:
+          - NETHERITE_CHESTPLATE
+      add-weight: 80
+
+    netherite-leggings:
+      match-item:
+        material:
+          - NETHERITE_LEGGINGS
+      add-weight: 60
+
+    netherite-boots:
+      match-item:
+        material:
+          - NETHERITE_BOOTS
+      add-weight: 50
+    sharpness:
+      match-item:
+        contains-enchants:
+          sharpness: 3
+      add-weight: 20
+
+    sharpness-high:
+      match-item:
+        contains-enchants:
+          sharpness: 4
+      add-weight: 35
+
+    smite:
+      match-item:
+        contains-enchants:
+          smite: 3
+      add-weight: 15
+
+    bane-of-arthropods:
+      match-item:
+        contains-enchants:
+          bane_of_arthropods: 3
+      add-weight: 15
+
+    fire-aspect:
+      match-item:
+        contains-enchants:
+          fire_aspect: [1,2]
+      add-weight: 10
+
+    knockback:
+      match-item:
+        contains-enchants:
+          knockback: [1,2]
+      add-weight: 8
+
+    sweeping-edge:
+      match-item:
+        contains-enchants:
+          sweeping_edge: [2,3]
+      add-weight: 10
+
+    looting:
+      match-item:
+        contains-enchants:
+          looting: [2,3]
+      add-weight: 8
+
+    protection:
+      match-item:
+        contains-enchants:
+          protection: 2
+      add-weight: 15
+
+    protection-high:
+      match-item:
+        contains-enchants:
+          protection: 3
+      add-weight: 25
+
+    fire-protection:
+      match-item:
+        contains-enchants:
+          fire_protection: [2,3,4]
+      add-weight: 12
+
+    blast-protection:
+      match-item:
+        contains-enchants:
+          blast_protection: [2,3,4]
+      add-weight: 12
+
+    projectile-protection:
+      match-item:
+        contains-enchants:
+          projectile_protection: [2,3,4]
+      add-weight: 12
+
+    thorns:
+      match-item:
+        contains-enchants:
+          thorns: [1,2,3]
+      add-weight: 10
+
+    feather-falling:
+      match-item:
+        contains-enchants:
+          feather_falling: [3,4]
+      add-weight: 10
+
+    depth-strider:
+      match-item:
+        contains-enchants:
+          depth_strider: [2,3]
+      add-weight: 8
+
+    soul-speed:
+      match-item:
+        contains-enchants:
+          soul_speed: [1,2,3]
+      add-weight: 8
+
+    power:
+      match-item:
+        contains-enchants:
+          power: 3
+      add-weight: 18
+
+    power-high:
+      match-item:
+        contains-enchants:
+          power: 4
+      add-weight: 30
+
+    punch:
+      match-item:
+        contains-enchants:
+          punch: [1,2]
+      add-weight: 10
+
+    flame:
+      match-item:
+        contains-enchants:
+          flame: 1
+      add-weight: 10
+
+    multishot:
+      match-item:
+        contains-enchants:
+          multishot: 1
+      add-weight: 12
+
+    piercing:
+      match-item:
+        contains-enchants:
+          piercing: [2,3,4]
+      add-weight: 10
+
+    quick-charge:
+      match-item:
+        contains-enchants:
+          quick_charge: [2,3]
+      add-weight: 8
+
+    loyalty:
+      match-item:
+        contains-enchants:
+          loyalty: [2,3]
+      add-weight: 10
+
+    riptide:
+      match-item:
+        contains-enchants:
+          riptide: [2,3]
+      add-weight: 8
+
+    impaling:
+      match-item:
+        contains-enchants:
+          impaling: [3,4,5]
+      add-weight: 15
+
+    channeling:
+      match-item:
+        contains-enchants:
+          channeling: 1
+      add-weight: 12
+
+    unbreaking:
+      match-item:
+        contains-enchants:
+          unbreaking: [2,3]
+      add-weight: 5
+
+    mending:
+      match-item:
+        contains-enchants:
+          mending: 1
+      add-weight: 8

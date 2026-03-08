@@ -1,8 +1,6 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
