@@ -11,7 +11,7 @@ apply-rules:
     not:
       entity-types:
         - CREEPER
-  level-weight: 15~30
+  level-weight: 30
 
 limit:
   random: 0.3

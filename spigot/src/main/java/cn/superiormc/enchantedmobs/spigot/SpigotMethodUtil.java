@@ -12,6 +12,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -248,8 +249,12 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
-    public void dropPrivateItem(Player player, ItemStack itemStack, Location loc) {
-        // EMPTY
+    public Item dropItem(Player player, ItemStack itemStack, Location loc) {
+        World world = loc.getWorld();
+        if (world == null) {
+            return null;
+        }
+        return world.dropItemNaturally(loc, itemStack);
     }
 
     @Override

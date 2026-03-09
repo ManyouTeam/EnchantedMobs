@@ -1,10 +1,13 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
+import cn.superiormc.enchantedmobs.EnchantedMobs;
+import cn.superiormc.enchantedmobs.managers.PowerManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -56,9 +59,12 @@ public class DisarmAbility extends AbstractAbility {
             }
         }
 
-        if (drop) {
-            Item dropped = living.getWorld().dropItemNaturally(living.getLocation(), item);
-            dropped.setPickupDelay(Math.max(0, getInt("pickup-delay", 20, context.level())));
+        if (drop && living instanceof Player player) {
+            Item tempVal1 = EnchantedMobs.methodUtil.dropItem(player, item, getLocation(context));
+            if (tempVal1 != null) {
+                PowerManager.powerManager.markUsedPower(tempVal1);
+                tempVal1.setPickupDelay(Math.max(0, getInt("pickup-delay", 20, context.level())));
+            }
         }
 
         return false;

@@ -8,6 +8,7 @@ import cn.superiormc.enchantedmobs.paper.listener.PaperPlayerPowerListener;
 import cn.superiormc.enchantedmobs.paper.listener.PaperTempBlockListener;
 import cn.superiormc.enchantedmobs.paper.methods.BuildItemPaper;
 import cn.superiormc.enchantedmobs.paper.methods.DebuildItemPaper;
+import cn.superiormc.enchantedmobs.paper.listener.DroppedItemListener;
 import cn.superiormc.enchantedmobs.paper.utils.PaperTextUtil;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import cn.superiormc.enchantedmobs.utils.SpecialMethodUtil;
@@ -21,6 +22,7 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -265,26 +267,16 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
-    public void dropPrivateItem(Player player, ItemStack itemStack, Location loc) {
-        if (!CommonUtil.getMinorVersion(19, 1)) {
-            return;
+    public Item dropItem(Player player, ItemStack itemStack, Location loc) {
+        World world = loc.getWorld();
+        if (world == null) {
+            return null;
         }
-
-        Item item = loc.getWorld().dropItem(loc, itemStack);
-        
-        item.setOwner(player.getUniqueId());
-
-        for (Player p : loc.getWorld().getPlayers()) {
-            if (!p.equals(player)) {
-                p.hideEntity(EnchantedMobs.instance, item);
-            }
+        Item item = world.dropItemNaturally(loc, itemStack);
+        if (CommonUtil.getMinorVersion(19, 1)) {
+            item.setOwner(player.getUniqueId());
         }
-
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance,  () -> {
-            if (!item.isDead()) {
-                item.remove();
-            }
-        }, 1200L);
+        return item;
     }
 
     @Override
@@ -294,6 +286,7 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
     public void entityScannerManager() {
+        new DroppedItemListener();
         new PaperEntityScannerListener();
     }
 

@@ -22,7 +22,7 @@ command:
   entity-skills: "&#98FB98[EnchantedMobs] &f实体 &e{entity}&f 可用技能: &7{skills}"
 
 mob-spawned: "&#98FB98[EnchantedMobs] &f怪物生成成功！"
-
+item-back: "&#98FB98[EnchantedMobs] &f你的被缴械物品已返还到你的背包!"
 mob-powered-notify: "&#98FB98[EnchantedMobs] &e强化怪物出现：&f{mob} &7@ &b{world}({x}, {y}, {z})"
 
 override-lang:

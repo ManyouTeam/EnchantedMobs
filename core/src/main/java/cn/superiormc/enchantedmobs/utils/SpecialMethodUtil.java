@@ -3,7 +3,7 @@ package cn.superiormc.enchantedmobs.utils;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -63,7 +63,7 @@ public interface SpecialMethodUtil {
 
     ConfigurationSection serializeItemStack(ItemStack item);
 
-    void dropPrivateItem(Player player, ItemStack itemStack, Location loc);
+    Item dropItem(Player player, ItemStack itemStack, Location loc);
 
     void tempBlockManager();
 

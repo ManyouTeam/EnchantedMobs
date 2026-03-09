@@ -12,8 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.Set;
-
 public class PaperPlayerPowerListener extends PlayerPowerManager implements Listener {
 
     public PaperPlayerPowerListener() {
@@ -24,6 +22,7 @@ public class PaperPlayerPowerListener extends PlayerPowerManager implements List
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        DroppedItemListener.droppedItemCache.backItem(player);
         PlayerPowerManager.playerPowerManager.initPlayer(player);
     }
 

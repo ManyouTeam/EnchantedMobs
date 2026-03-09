@@ -22,7 +22,7 @@ command:
   entity-skills: "&#98FB98[EnchantedMobs] &fEntity &e{entity}&f skills: &7{skills}"
 
 mob-spawned: "&#98FB98[EnchantedMobs] &fMob spawned successfully!"
-
+item-back: "&#98FB98[EnchantedMobs] &fYour dropped item going back to your backpack!"
 mob-powered-notify: "&#98FB98[EnchantedMobs] &ePowered mob spawned: &f{mob} &7@ &b{world}({x}, {y}, {z})"
 
 override-lang:

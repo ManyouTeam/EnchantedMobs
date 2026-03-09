@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityRemoveEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 
 public class SpigotEntityScannerListener extends EntityScannerManager implements Listener {
@@ -22,7 +23,7 @@ public class SpigotEntityScannerListener extends EntityScannerManager implements
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onDeath(EntityDeathEvent event) {
+    public void onRemove(EntityRemoveEvent event) {
         removeEntityCache(event.getEntity());
     }
 }
