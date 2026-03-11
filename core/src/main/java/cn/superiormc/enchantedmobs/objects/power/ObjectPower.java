@@ -2,6 +2,7 @@ package cn.superiormc.enchantedmobs.objects.power;
 
 import cn.superiormc.enchantedmobs.managers.AbilityManager;
 import cn.superiormc.enchantedmobs.managers.ConfigManager;
+import cn.superiormc.enchantedmobs.managers.MatchEntityManager;
 import cn.superiormc.enchantedmobs.managers.PowerManager;
 import cn.superiormc.enchantedmobs.objects.AdvancedSection;
 import cn.superiormc.enchantedmobs.objects.ability.AbilityContext;
@@ -196,6 +197,25 @@ public class ObjectPower extends AdvancedSection {
         return AbilityManager.abilityManager.execute(section.getConfigurationSection("on-spawn.abilities"), context);
     }
 
+    public boolean onUntag(int level, UntagHandler handler) {
+        if (!matchEntityHealthConditions("on-untag.conditions", level, handler.sourceEntity)) {
+            return false;
+        }
+        List<String> includeReasons = getStringList("on-untag.conditions.reason")
+                .stream().map(String::toUpperCase).toList();
+        if (!includeReasons.isEmpty() && (handler.reason == null || !includeReasons.contains(handler.reason.name().toUpperCase()))) {
+            return false;
+        }
+        List<String> ignoreReasons = getStringList("on-untag.conditions.ignore-reason")
+                .stream().map(String::toUpperCase).toList();
+        if (!ignoreReasons.isEmpty() && handler.reason != null && ignoreReasons.contains(handler.reason.name().toUpperCase())) {
+            return false;
+        }
+
+        AbilityContext context = new AbilityContext(this, level, handler);
+        return AbilityManager.abilityManager.execute(section.getConfigurationSection("on-untag.abilities"), context);
+    }
+
     public boolean onCombust(int level, CombustHandler handler) {
         if (getBoolean("on-combust.conditions.by-block", false) && !handler.byBlock) {
             return false;
@@ -223,6 +243,9 @@ public class ObjectPower extends AdvancedSection {
 
     public boolean onDamage(int level, DamageHandler handler) {
         if (!matchEntityHealthConditions("on-damage.conditions", level, handler.sourceEntity)) {
+            return false;
+        }
+        if (!matchEntityConditions("on-damage.conditions.match-damager", handler.sourceEntity)) {
             return false;
         }
         if (getBoolean("on-damage.conditions.by-block", false) && !handler.byBlock) {
@@ -354,6 +377,17 @@ public class ObjectPower extends AdvancedSection {
         double maxHealth = CommonUtil.getMaxHealth(living);
         return matchCompareCondition(basePath + ".now-health", level, nowHealth, "health", String.valueOf(nowHealth), "max-health", String.valueOf(maxHealth))
                 && matchCompareCondition(basePath + ".max-health", level, maxHealth, "health", String.valueOf(nowHealth), "max-health", String.valueOf(maxHealth));
+    }
+
+    private boolean matchEntityConditions(String path, Entity entity) {
+        ConfigurationSection matchSection = getSection(path);
+        if (matchSection == null) {
+            return true;
+        }
+        if (!(entity instanceof LivingEntity living)) {
+            return false;
+        }
+        return MatchEntityManager.matchEntityManager.getMatch(matchSection, living);
     }
 
     private boolean matchCompareCondition(String path, int level, double current, String... args) {

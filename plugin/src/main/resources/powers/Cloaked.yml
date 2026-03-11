@@ -15,3 +15,28 @@ on-spawn:
       potion: INVISIBILITY
       duration: 999999
       amplifier: 0
+      particles: false
+      icon: false
+on-damage:
+  conditions:
+    by-entity: true
+    match-damager:
+      entity-types:
+        - PLAYER
+  abilities:
+    1:
+      type: remove_potion_effect
+      target: TARGET
+      potion: INVISIBILITY
+    2:
+      type: delay
+      delay: 60
+      abilities:
+        1:
+          type: potion_effect
+          target: TARGET
+          potion: INVISIBILITY
+          duration: 999999
+          amplifier: 0
+          particles: false
+          icon: false

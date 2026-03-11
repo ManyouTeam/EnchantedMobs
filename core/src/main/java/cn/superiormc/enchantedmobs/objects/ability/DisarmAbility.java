@@ -1,6 +1,7 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
 import cn.superiormc.enchantedmobs.EnchantedMobs;
+import cn.superiormc.enchantedmobs.managers.MatchItemManager;
 import cn.superiormc.enchantedmobs.managers.PowerManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,6 +41,9 @@ public class DisarmAbility extends AbstractAbility {
                 if (isEmpty(offHand)) {
                     return false;
                 }
+                if (!MatchItemManager.matchItemManager.getMatch(getSection("match-item"), offHand)) {
+                    return false;
+                }
                 item = offHand.clone();
                 equipment.setItemInOffHand(new ItemStack(Material.AIR));
                 if (!(equipment instanceof PlayerInventory)) {
@@ -49,6 +53,9 @@ public class DisarmAbility extends AbstractAbility {
             default -> {
                 ItemStack mainHand = equipment.getItemInMainHand();
                 if (isEmpty(mainHand)) {
+                    return false;
+                }
+                if (!MatchItemManager.matchItemManager.getMatch(getSection("match-item"), mainHand)) {
                     return false;
                 }
                 item = mainHand.clone();
@@ -62,7 +69,7 @@ public class DisarmAbility extends AbstractAbility {
         if (drop && living instanceof Player player) {
             Item tempVal1 = EnchantedMobs.methodUtil.dropItem(player, item, getLocation(context));
             if (tempVal1 != null) {
-                PowerManager.powerManager.markUsedPower(tempVal1);
+                PowerManager.powerManager.markDisarmReturnItem(tempVal1);
                 tempVal1.setPickupDelay(Math.max(0, getInt("pickup-delay", 20, context.level())));
             }
         }

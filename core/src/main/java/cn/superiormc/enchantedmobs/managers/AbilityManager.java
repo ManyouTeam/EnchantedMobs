@@ -83,6 +83,7 @@ public class AbilityManager {
         registerAbilityParser("pull_target", PullTargetAbility::new);
         registerAbilityParser("potion_cloud", PotionCloudAbility::new);
         registerAbilityParser("potion_effect", PotionEffectAbility::new);
+        registerAbilityParser("remove_potion_effect", RemovePotionEffectAbility::new);
         registerAbilityParser("freeze", FreezeAbility::new);
         registerAbilityParser("fire", FireAbility::new);
         registerAbilityParser("homing_projectile", HomingProjectileAbility::new);

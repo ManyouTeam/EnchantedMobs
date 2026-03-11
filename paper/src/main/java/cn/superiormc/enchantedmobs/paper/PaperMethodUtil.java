@@ -8,7 +8,7 @@ import cn.superiormc.enchantedmobs.paper.listener.PaperPlayerPowerListener;
 import cn.superiormc.enchantedmobs.paper.listener.PaperTempBlockListener;
 import cn.superiormc.enchantedmobs.paper.methods.BuildItemPaper;
 import cn.superiormc.enchantedmobs.paper.methods.DebuildItemPaper;
-import cn.superiormc.enchantedmobs.paper.listener.DroppedItemListener;
+import cn.superiormc.enchantedmobs.listeners.DroppedItemListener;
 import cn.superiormc.enchantedmobs.paper.utils.PaperTextUtil;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import cn.superiormc.enchantedmobs.utils.SpecialMethodUtil;
@@ -286,7 +286,6 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
     @Override
     public void entityScannerManager() {
-        new DroppedItemListener();
         new PaperEntityScannerListener();
     }
 

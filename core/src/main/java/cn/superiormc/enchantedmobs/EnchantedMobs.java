@@ -1,5 +1,6 @@
 package cn.superiormc.enchantedmobs;
 
+import cn.superiormc.enchantedmobs.listeners.DroppedItemListener;
 import cn.superiormc.enchantedmobs.managers.*;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import cn.superiormc.enchantedmobs.utils.SpecialMethodUtil;
@@ -58,6 +59,9 @@ public final class EnchantedMobs extends JavaPlugin {
         new MatchItemManager();
         new AbilityManager();
         new PowerManager();
+        if (ConfigManager.configManager.getBoolean("mob-combat.disarm-auto-return-item", true)) {
+            new DroppedItemListener();
+        }
         EnchantedMobs.methodUtil.entityScannerManager();
         EnchantedMobs.methodUtil.playerPowerManager();
         EnchantedMobs.methodUtil.tempBlockManager();

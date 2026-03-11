@@ -57,3 +57,5 @@ mob-display:
 mob-combat:
   # If true, damage between monsters will be cancelled.
   disable-powered-mob-friendly-fire: false
+  # If true, dropped item by disarm ability will auto return back to player inventory if they are going to removed.
+  disarm-auto-return-item: true

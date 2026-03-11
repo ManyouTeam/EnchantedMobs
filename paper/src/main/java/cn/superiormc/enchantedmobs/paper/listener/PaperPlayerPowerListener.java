@@ -22,7 +22,6 @@ public class PaperPlayerPowerListener extends PlayerPowerManager implements List
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        DroppedItemListener.droppedItemCache.backItem(player);
         PlayerPowerManager.playerPowerManager.initPlayer(player);
     }
 

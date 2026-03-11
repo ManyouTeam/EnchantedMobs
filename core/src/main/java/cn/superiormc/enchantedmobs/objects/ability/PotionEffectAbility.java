@@ -11,6 +11,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class PotionEffectAbility extends AbstractAbility {
 
+    private static final int DEFAULT_INFINITE_DURATION_THRESHOLD = 999999;
+
     public PotionEffectAbility(ConfigurationSection section) {
         super("PotionEffect", section);
     }
@@ -28,11 +30,16 @@ public class PotionEffectAbility extends AbstractAbility {
         }
 
         int durationTicks = getInt("duration", 100, context.level());
+        int infiniteThreshold = Math.max(0, getInt("infinite-duration-threshold", DEFAULT_INFINITE_DURATION_THRESHOLD, context.level()));
+        if (infiniteThreshold > 0 && durationTicks >= infiniteThreshold) {
+            durationTicks = PotionEffect.INFINITE_DURATION;
+        }
         int amplifier = Math.max(0, getInt("amplifier", 0, context.level()));
         boolean ambient = getBoolean("ambient", false);
         boolean particles = getBoolean("particles", true);
         boolean icon = getBoolean("icon", true);
-        living.addPotionEffect(new PotionEffect(type, Math.max(1, durationTicks), amplifier, ambient, particles, icon));
+        int appliedDuration = durationTicks == PotionEffect.INFINITE_DURATION ? PotionEffect.INFINITE_DURATION : Math.max(1, durationTicks);
+        living.addPotionEffect(new PotionEffect(type, appliedDuration, amplifier, ambient, particles, icon));
         return false;
     }
 

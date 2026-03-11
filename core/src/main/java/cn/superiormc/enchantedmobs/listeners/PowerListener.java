@@ -159,9 +159,14 @@ public class PowerListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTarget(EntityTargetEvent event) {
-        if (event.getEntity() instanceof Monster) {
-            PowerManager.powerManager.handleTarget(event);
+        if (!(event.getEntity() instanceof Monster)) {
+            return;
         }
+        if (event.getTarget() == null) {
+            PowerManager.powerManager.handleUntag(event);
+            return;
+        }
+        PowerManager.powerManager.handleTarget(event);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

@@ -28,6 +28,7 @@ public class PowerManager {
     public static PowerManager powerManager;
 
     private final NamespacedKey USED_POWER = new NamespacedKey(EnchantedMobs.instance, "used_power");
+    private final NamespacedKey DISARM_RETURN_ITEM = new NamespacedKey(EnchantedMobs.instance, "disarm_return_item");
 
     private final Map<String, ObjectPower> powers = new HashMap<>();
 
@@ -474,7 +475,10 @@ public class PowerManager {
         boolean byEntity = false;
         if (event instanceof EntityDamageByEntityEvent entityEvent) {
             byEntity = true;
-            damageEntity = entityEvent.getDamager();
+            damageEntity = EnchantedMobs.methodUtil.getDamager(entityEvent.getDamager());
+            if (damageEntity == null) {
+                damageEntity = entityEvent.getDamager();
+            }
         }
         DamageHandler handler = new DamageHandler(entity, damageEntity, event.getDamage(), byEntity, event instanceof EntityDamageByBlockEvent, event.getCause());
         forEachActivePower(entity, null, "on-damage", (power, level) -> power.onDamage(level, handler), event::setCancelled);
@@ -525,6 +529,12 @@ public class PowerManager {
         }
         TargetHandler handler = new TargetHandler(entity, target);
         forEachActivePower(entity, null, "on-target", (power, level) -> power.onTarget(level, handler), event::setCancelled);
+    }
+
+    public void handleUntag(EntityTargetEvent event) {
+        Entity entity = event.getEntity();
+        UntagHandler handler = new UntagHandler(entity, event.getReason());
+        forEachActivePower(entity, null, "on-untag", (power, level) -> power.onUntag(level, handler), event::setCancelled);
     }
 
     public void handleExplode(EntityExplodeEvent event) {
@@ -581,5 +591,20 @@ public class PowerManager {
             return false;
         }
         return entity.getPersistentDataContainer().get(USED_POWER, PersistentDataType.BOOLEAN);
+    }
+
+    public void markDisarmReturnItem(Item item) {
+        PersistentDataContainer pdc = item.getPersistentDataContainer();
+        pdc.set(DISARM_RETURN_ITEM, PersistentDataType.BOOLEAN, true);
+    }
+
+    public boolean isDisarmReturnItem(Entity entity) {
+        if (entity == null) {
+            return false;
+        }
+        if (!entity.getPersistentDataContainer().has(DISARM_RETURN_ITEM, PersistentDataType.BOOLEAN)) {
+            return false;
+        }
+        return entity.getPersistentDataContainer().get(DISARM_RETURN_ITEM, PersistentDataType.BOOLEAN);
     }
 }
