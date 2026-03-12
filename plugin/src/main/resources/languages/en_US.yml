@@ -103,3 +103,4 @@ override-lang:
   entity.zombie: "Zombie"
   entity.zombie_villager: "Zombie Villager"
   entity.zombified_piglin: "Zombified Piglin"
+  power.regeneration: "Regeneration"

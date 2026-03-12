@@ -108,23 +108,9 @@ public class PowerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
-        if (!(entity instanceof Monster)) {
-            return;
+        if (entity instanceof Monster) {
+            PowerManager.powerManager.handleOnDamage(event);
         }
-
-        if (ConfigManager.configManager.getBoolean("mob-combat.disable-powered-mob-friendly-fire", false)
-                && event instanceof EntityDamageByEntityEvent damageByEntityEvent) {
-            Entity damager = EnchantedMobs.methodUtil.getDamager(damageByEntityEvent.getDamager());
-            if (damager == null) {
-                damager = damageByEntityEvent.getDamager();
-            }
-            if (damager instanceof Monster) {
-                event.setCancelled(true);
-                return;
-            }
-        }
-
-        PowerManager.powerManager.handleOnDamage(event);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -137,16 +123,6 @@ public class PowerListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMeleeAttack(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Monster)) {
-            return;
-        }
-
-        if (ConfigManager.configManager.getBoolean("mob-combat.disable-powered-mob-friendly-fire", false)
-                && event.getEntity() instanceof Monster) {
-            event.setCancelled(true);
-            return;
-        }
-
         PowerManager.powerManager.handleMeleeAttack(event);
     }
 
@@ -173,6 +149,13 @@ public class PowerListener implements Listener {
     public void onEntityExplode(EntityExplodeEvent event) {
         if (event.getEntity() instanceof Monster) {
             PowerManager.powerManager.handleExplode(event);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onExplosionPrime(ExplosionPrimeEvent event) {
+        if (event.getEntity() instanceof Monster) {
+            PowerManager.powerManager.handleCreeperExplode(event);
         }
     }
 }

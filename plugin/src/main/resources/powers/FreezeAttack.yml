@@ -14,6 +14,8 @@ apply-rules:
   level-weight: 12~22
 
 on-melee-attack:
+  conditions:
+    accept-source: true
   abilities:
     1:
       type: freeze

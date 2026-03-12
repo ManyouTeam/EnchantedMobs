@@ -20,6 +20,9 @@ public class SetHealthAbility extends AbstractAbility {
         if (!(entity instanceof LivingEntity living)) {
             return false;
         }
+        if (living.getHealth() <= 0) {
+            return false;
+        }
         double max = CommonUtil.getMaxHealth(living);
         double heal = getDouble("amount", 10.0, context.level(), "health", String.valueOf(living.getHealth()), "max-health", String.valueOf(max));
         if (heal >= 2048) {

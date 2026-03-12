@@ -20,6 +20,7 @@ limit:
 on-melee-attack:
   conditions:
     min-damage: 0.1
+    accept-source: true
   modifier:
     damage: '{original} + ({level} / 200)'
   abilities:

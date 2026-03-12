@@ -60,6 +60,7 @@ Abilities can trigger on many combat events:
 - `on-death`
 - `on-target`
 - `on-explode`
+- `on-creeper-explode`
 - `on-projectile-hit`
 - `on-shoot-bow`
 - `on-projectile-tick`

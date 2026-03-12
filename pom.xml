@@ -6,7 +6,7 @@
 
     <groupId>cn.superiormc.enchantedmobs</groupId>
     <artifactId>EnchantedMobs</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <packaging>pom</packaging>
 
     <modules>

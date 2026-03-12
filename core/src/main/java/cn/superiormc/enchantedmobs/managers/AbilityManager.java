@@ -18,6 +18,7 @@ public class AbilityManager {
 
     public AbilityManager() {
         abilityManager = this;
+        registerDefaultAbilities();
     }
 
     public void registerAbilityParser(String type, Function<ConfigurationSection, AbstractAbility> parser) {

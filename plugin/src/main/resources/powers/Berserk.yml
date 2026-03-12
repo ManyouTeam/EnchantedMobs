@@ -9,6 +9,7 @@ apply-rules:
     not:
       entity-types:
         - CREEPER
+        - WITCH
   level-weight: 25~65
 on-melee-attack:
   modifier:

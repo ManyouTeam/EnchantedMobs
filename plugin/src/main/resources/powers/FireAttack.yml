@@ -18,6 +18,8 @@ limit:
   cooldown: -1
 
 on-melee-attack:
+  conditions:
+    accept-source: true
   abilities:
     1:
       type: fire

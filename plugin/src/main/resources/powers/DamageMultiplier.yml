@@ -8,7 +8,10 @@ apply-rules:
   weight: 36
   level-weight: 14
   match-entity:
-    any: true
+    not:
+      entity-types:
+        - CREEPER
+        - WITCH
 
 limit:
   random: 1

@@ -205,6 +205,7 @@ public class PowerManager {
 
         Map<String, List<CandidatePower>> groupedCandidates = new HashMap<>();
         Map<String, Boolean> uniqueGroupMap = new HashMap<>();
+        List<CandidatePower> alwaysSelectedCandidates = new ArrayList<>();
 
         for (Map.Entry<String, ObjectPower> entry : powers.entrySet()) {
             ObjectPower power = entry.getValue();
@@ -225,17 +226,23 @@ public class PowerManager {
             int weight = Math.max(1, power.getInt("apply-rules.weight", 1, level));
             boolean groupUnique = power.getBoolean("apply-rules.group-unique", false);
 
-            groupedCandidates.computeIfAbsent(group, k -> new ArrayList<>())
-                    .add(new CandidatePower(entry.getKey(), cost, weight));
             uniqueGroupMap.put(group, uniqueGroupMap.getOrDefault(group, false) || groupUnique);
+            CandidatePower candidate = new CandidatePower(entry.getKey(), group, cost, weight);
+            if (power.getBoolean("apply-rules.always-select", false) || power.getBoolean("apply-rules.always-pick", false)) {
+                alwaysSelectedCandidates.add(candidate);
+                continue;
+            }
+
+            groupedCandidates.computeIfAbsent(group, k -> new ArrayList<>())
+                    .add(candidate);
         }
 
-        if (groupedCandidates.isEmpty()) {
+        if (groupedCandidates.isEmpty() && alwaysSelectedCandidates.isEmpty()) {
             return Collections.emptyList();
         }
 
         int remainLevel = level;
-        List<String> selectedPowers = new ArrayList<>();
+        LinkedHashSet<String> selectedPowerIds = new LinkedHashSet<>();
 
         Map<String, List<CandidatePower>> currentPools = new HashMap<>();
         Set<String> consumedUniqueGroups = new HashSet<>();
@@ -243,7 +250,16 @@ public class PowerManager {
             currentPools.put(entry.getKey(), new ArrayList<>(entry.getValue()));
         }
 
-        while (remainLevel > 0) {
+        alwaysSelectedCandidates.stream()
+                .sorted(Comparator.comparing(CandidatePower::powerId))
+                .forEach(candidate -> {
+                    selectedPowerIds.add(candidate.powerId());
+                    if (uniqueGroupMap.getOrDefault(candidate.group(), false)) {
+                        consumedUniqueGroups.add(candidate.group());
+                    }
+                });
+
+        while (remainLevel > 0 && !groupedCandidates.isEmpty()) {
             List<String> groupOrder = new ArrayList<>(groupedCandidates.keySet());
             Collections.shuffle(groupOrder);
             boolean pickedThisRound = false;
@@ -266,7 +282,7 @@ public class PowerManager {
                     continue;
                 }
 
-                selectedPowers.add(chosen.powerId());
+                selectedPowerIds.add(chosen.powerId());
                 remainLevel -= chosen.cost();
                 pickedThisRound = true;
                 pool.remove(chosen);
@@ -281,6 +297,7 @@ public class PowerManager {
             }
         }
 
+        List<String> selectedPowers = new ArrayList<>(selectedPowerIds);
         if (!selectedPowers.isEmpty()) {
             EntityScannerManager.entityScannerManager.setEntityPowers(entity, selectedPowers, level);
         }
@@ -479,6 +496,12 @@ public class PowerManager {
             if (damageEntity == null) {
                 damageEntity = entityEvent.getDamager();
             }
+            if (ConfigManager.configManager.getBoolean("mob-combat.disable-powered-mob-friendly-fire", false)) {
+                if (damageEntity instanceof Monster) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
         }
         DamageHandler handler = new DamageHandler(entity, damageEntity, event.getDamage(), byEntity, event instanceof EntityDamageByBlockEvent, event.getCause());
         forEachActivePower(entity, null, "on-damage", (power, level) -> power.onDamage(level, handler), event::setCancelled);
@@ -497,12 +520,17 @@ public class PowerManager {
     }
 
     public void handleMeleeAttack(EntityDamageByEntityEvent event) {
-        Entity attacker = EnchantedMobs.methodUtil.getDamager(event.getDamager());
-        if (attacker == null) {
-            attacker = event.getDamager();
+        Entity damageEntity = EnchantedMobs.methodUtil.getDamager(event.getDamager());
+        boolean isMelee = false;
+        if (damageEntity == null) {
+            damageEntity = event.getDamager();
+            isMelee = true;
         }
-        MeleeAttackHandler handler = new MeleeAttackHandler(attacker, event.getEntity(), event.getDamage(), event.getDamager() instanceof LivingEntity);
-        forEachActivePower(attacker, null, "on-melee-attack", (power, level) -> power.onMeleeAttack(level, handler), event::setCancelled);
+        if (!(damageEntity instanceof Monster)) {
+            return;
+        }
+        MeleeAttackHandler handler = new MeleeAttackHandler(damageEntity, event.getEntity(), event.getDamage(), isMelee);
+        forEachActivePower(damageEntity, null, "on-melee-attack", (power, level) -> power.onMeleeAttack(level, handler), event::setCancelled);
         if (handler.replacedNewDamage && !event.isCancelled()) {
             event.setDamage(Math.max(0, handler.damage));
         }
@@ -527,7 +555,7 @@ public class PowerManager {
         if (target == null) {
             return;
         }
-        TargetHandler handler = new TargetHandler(entity, target);
+        TargetHandler handler = new TargetHandler(entity, target, event.getReason());
         forEachActivePower(entity, null, "on-target", (power, level) -> power.onTarget(level, handler), event::setCancelled);
     }
 
@@ -539,13 +567,29 @@ public class PowerManager {
 
     public void handleExplode(EntityExplodeEvent event) {
         Entity entity = event.getEntity();
-        ExplodeHandler handler = new ExplodeHandler(entity, event.getLocation(), event.getYield());
+        Entity damager = EnchantedMobs.methodUtil.getDamager(entity);
+        if (damager == null) {
+            damager = entity;
+        }
+        ExplodeHandler handler = new ExplodeHandler(damager, entity, event.getLocation(), event.getYield());
         forEachActivePower(entity, null, "on-explode", (power, level) -> power.onExplode(level, handler), null);
         if (handler.replacedNewYield && !event.isCancelled()) {
             event.setYield(Math.max(0, handler.yield));
         }
     }
 
+    public void handleCreeperExplode(ExplosionPrimeEvent event) {
+        Entity entity = event.getEntity();
+        Entity damager = EnchantedMobs.methodUtil.getDamager(entity);
+        if (damager == null) {
+            damager = entity;
+        }
+        CreeperExplodeHandler handler = new CreeperExplodeHandler(damager, entity, entity.getLocation(), event.getRadius());
+        forEachActivePower(entity, null, "on-creeper-explode", (power, level) -> power.onCreeperExplode(level, handler), null);
+        if (handler.replacedNewRadius && !event.isCancelled()) {
+            event.setRadius(Math.max(0, handler.radius));
+        }
+    }
 
     private void forEachActivePower(Entity owner, Entity skillEntity, String eventKey, PowerExecution execution, Consumer<Boolean> cancelCallback) {
         List<String> powerIDs = EntityScannerManager.entityScannerManager.getEntityPowerCache(owner);
@@ -569,7 +613,7 @@ public class PowerManager {
         }
     }
 
-    private record CandidatePower(String powerId, int cost, int weight) {
+    private record CandidatePower(String powerId, String group, int cost, int weight) {
     }
 
     @FunctionalInterface

@@ -30,7 +30,7 @@ mob-power-generator:
   ignore-custom-spawn: true
   default-level: '15~60'
   max-level: 400
-  spawn-chance: '20~45'
+  spawn-chance: '5~25'
   player-scan-range: 48
   disabled-worlds: []
   # Ghost, Slime and Ender Dragon are disabled by default and can not being changed.

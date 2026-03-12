@@ -11,8 +11,8 @@ public class ExplodeHandler extends AbstractHandler {
 
     public boolean replacedNewYield;
 
-    public ExplodeHandler(Entity source, Location location, float yield) {
-        super(source, source, source);
+    public ExplodeHandler(Entity damager, Entity source, Location location, float yield) {
+        super(damager, source, source);
         this.location = location;
         this.originalYield = yield;
         this.yield = yield;

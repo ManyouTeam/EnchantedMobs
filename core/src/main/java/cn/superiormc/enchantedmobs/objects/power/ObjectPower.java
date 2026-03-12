@@ -342,31 +342,45 @@ public class ObjectPower extends AdvancedSection {
         if (!matchEntityHealthConditions("on-target.conditions", level, handler.sourceEntity)) {
             return false;
         }
+        List<String> includeReasons = getStringList("on-target.conditions.reason")
+                .stream().map(String::toUpperCase).toList();
+        if (!includeReasons.isEmpty() && (handler.reason == null || !includeReasons.contains(handler.reason.name().toUpperCase()))) {
+            return false;
+        }
+        List<String> ignoreReasons = getStringList("on-target.conditions.ignore-reason")
+                .stream().map(String::toUpperCase).toList();
+        if (!ignoreReasons.isEmpty() && handler.reason != null && ignoreReasons.contains(handler.reason.name().toUpperCase())) {
+            return false;
+        }
         AbilityContext context = new AbilityContext(this, level, handler);
         return AbilityManager.abilityManager.execute(section.getConfigurationSection("on-target.abilities"), context);
     }
 
     public boolean onExplode(int level, ExplodeHandler handler) {
-        if (!matchEntityHealthConditions("on-explode.conditions", level, handler.sourceEntity)) {
+        return handleExplode(level, handler, "on-explode");
+    }
+
+    public boolean onCreeperExplode(int level, CreeperExplodeHandler handler) {
+        if (!matchEntityHealthConditions("on-creeper-explode.conditions", level, handler.sourceEntity)) {
             return false;
         }
-        if (!matchCompareCondition("on-explode.conditions.yield", level, handler.originalYield)) {
+        if (!matchCompareCondition("on-creeper-explode.conditions.radius", level, handler.originalRadius)) {
             return false;
         }
-        double minYield = getDouble("on-explode.conditions.min-yield", Double.NEGATIVE_INFINITY, level);
-        if (handler.originalYield < minYield) {
+        double minRadius = getDouble("on-creeper-explode.conditions.min-radius", Double.NEGATIVE_INFINITY, level);
+        if (handler.originalRadius < minRadius) {
             return false;
         }
-        double maxYield = getDouble("on-explode.conditions.max-yield", Double.POSITIVE_INFINITY, level);
-        if (handler.originalYield > maxYield) {
+        double maxRadius = getDouble("on-creeper-explode.conditions.max-radius", Double.POSITIVE_INFINITY, level);
+        if (handler.originalRadius > maxRadius) {
             return false;
         }
-        if (section.contains("on-explode.modifier")) {
-            handler.setNewYield((float) getDouble("on-explode.modifier.yield", 4, level, "original", String.valueOf(handler.originalYield)));
+        if (section.contains("on-creeper-explode.modifier")) {
+            handler.setNewRadius((float) getDouble("on-creeper-explode.modifier.radius", 4, level, "original", String.valueOf(handler.originalRadius)));
         }
 
         AbilityContext context = new AbilityContext(this, level, handler);
-        return AbilityManager.abilityManager.execute(section.getConfigurationSection("on-explode.abilities"), context);
+        return AbilityManager.abilityManager.execute(section.getConfigurationSection("on-creeper-explode.abilities"), context);
     }
 
     private boolean matchEntityHealthConditions(String basePath, int level, Entity entity) {
@@ -388,6 +402,29 @@ public class ObjectPower extends AdvancedSection {
             return false;
         }
         return MatchEntityManager.matchEntityManager.getMatch(matchSection, living);
+    }
+
+    private boolean handleExplode(int level, ExplodeHandler handler, String path) {
+        if (!matchEntityHealthConditions(path + ".conditions", level, handler.sourceEntity)) {
+            return false;
+        }
+        if (!matchCompareCondition(path + ".conditions.yield", level, handler.originalYield)) {
+            return false;
+        }
+        double minYield = getDouble(path + ".conditions.min-yield", Double.NEGATIVE_INFINITY, level);
+        if (handler.originalYield < minYield) {
+            return false;
+        }
+        double maxYield = getDouble(path + ".conditions.max-yield", Double.POSITIVE_INFINITY, level);
+        if (handler.originalYield > maxYield) {
+            return false;
+        }
+        if (section.contains(path + ".modifier")) {
+            handler.setNewYield((float) getDouble(path + ".modifier.yield", 4, level, "original", String.valueOf(handler.originalYield)));
+        }
+
+        AbilityContext context = new AbilityContext(this, level, handler);
+        return AbilityManager.abilityManager.execute(section.getConfigurationSection(path + ".abilities"), context);
     }
 
     private boolean matchCompareCondition(String path, int level, double current, String... args) {

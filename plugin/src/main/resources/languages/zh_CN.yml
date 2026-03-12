@@ -103,3 +103,4 @@ override-lang:
   entity.zombie: "僵尸"
   entity.zombie_villager: "僵尸村民"
   entity.zombified_piglin: "僵尸猪灵"
+  power.regeneration: "重生"

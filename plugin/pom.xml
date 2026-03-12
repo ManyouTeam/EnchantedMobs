@@ -8,7 +8,7 @@
     <parent>
         <groupId>cn.superiormc.enchantedmobs</groupId>
         <artifactId>EnchantedMobs</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
         <relativePath>../pom.xml</relativePath> <!-- 如果 plugin 和根目录同级 -->
     </parent>
 

@@ -9,6 +9,7 @@ apply-rules:
     not:
       entity-types:
         - CREEPER
+        - WITCH
   level-weight: 12~65
 limit:
   random: '0.12 + {level} / 320'
