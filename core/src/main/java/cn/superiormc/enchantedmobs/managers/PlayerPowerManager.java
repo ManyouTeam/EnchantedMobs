@@ -1,7 +1,9 @@
 package cn.superiormc.enchantedmobs.managers;
 
 import cn.superiormc.enchantedmobs.EnchantedMobs;
+import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import cn.superiormc.enchantedmobs.utils.MathUtil;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 public class PlayerPowerManager implements Listener {
 
@@ -23,6 +26,7 @@ public class PlayerPowerManager implements Listener {
     private static final int ARMOR_END = 39;
     private static final int OFFHAND_SLOT = 40;
     private static final int BACKPACK_SLOT_COUNT = 36;
+    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("%[^%]+%");
 
     private final Map<UUID, Integer> playerPower = new ConcurrentHashMap<>();
     private final Map<UUID, PlayerCache> playerCaches = new ConcurrentHashMap<>();
@@ -30,6 +34,7 @@ public class PlayerPowerManager implements Listener {
 
     private String formula = "{equipment_sum} + ({backpack_max} + {backpack_avg}) / 2";
     private boolean incrementalUpdateEnabled = true;
+    private boolean formulaUsesPlaceholders = false;
 
     protected PlayerPowerManager() {
         playerPowerManager = this;
@@ -37,12 +42,12 @@ public class PlayerPowerManager implements Listener {
     }
 
     public void reload() {
+        loadRules();
         playerPower.clear();
         playerCaches.clear();
         for (Player player : Bukkit.getOnlinePlayers()) {
             initPlayer(player);
         }
-        loadRules();
     }
 
     private void loadRules() {
@@ -50,6 +55,7 @@ public class PlayerPowerManager implements Listener {
         File file = new File(EnchantedMobs.instance.getDataFolder(), "player-power.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         formula = config.getString("formula", "{equipment_sum} + ({backpack_max} + {backpack_avg}) / 2");
+        formulaUsesPlaceholders = PLACEHOLDER_PATTERN.matcher(formula).find();
         incrementalUpdateEnabled = config.getBoolean("incremental-slot-update", true);
 
         ConfigurationSection section = config.getConfigurationSection("rules");
@@ -72,7 +78,20 @@ public class PlayerPowerManager implements Listener {
     }
 
     public int getPlayerPower(Player player) {
-        return playerPower.getOrDefault(player.getUniqueId(), 0);
+        UUID uuid = player.getUniqueId();
+        PlayerCache cache = playerCaches.get(uuid);
+        if (cache == null) {
+            return playerPower.getOrDefault(uuid, 0);
+        }
+
+        boolean papiEnabled = CommonUtil.checkPluginLoad("PlaceholderAPI");
+        if (!formulaUsesPlaceholders || !Bukkit.isPrimaryThread() || !papiEnabled) {
+            return playerPower.compute(uuid, (ignored, oldValue) -> evaluateFormula(null, cache, oldValue == null ? 0 : oldValue));
+        }
+
+        int value = evaluateFormula(player, cache, playerPower.getOrDefault(uuid, 0));
+        playerPower.put(uuid, value);
+        return value;
     }
 
     public void initPlayer(Player player) {
@@ -92,10 +111,9 @@ public class PlayerPowerManager implements Listener {
                 }
             }
 
-            int value = evaluateFormula(cache.equipmentSum, cache.backpackSum, cache.getBackpackMax());
             Bukkit.getScheduler().runTask(EnchantedMobs.instance, () -> {
                 playerCaches.put(uuid, cache);
-                playerPower.put(uuid, value);
+                playerPower.put(uuid, evaluateFormula(player, cache, playerPower.getOrDefault(uuid, 0)));
             });
         });
     }
@@ -149,8 +167,7 @@ public class PlayerPowerManager implements Listener {
                     }
                 }
 
-                int value = evaluateFormula(current.equipmentSum, current.backpackSum, current.getBackpackMax());
-                playerPower.put(uuid, value);
+                playerPower.put(uuid, evaluateFormula(player, current, playerPower.getOrDefault(uuid, 0)));
             });
         });
     }
@@ -167,14 +184,34 @@ public class PlayerPowerManager implements Listener {
         weightCounts.put(weight, count - 1);
     }
 
-    private int evaluateFormula(int equipmentSum, int backpackSum, int backpackMax) {
+    private int evaluateFormula(Player player, PlayerCache cache, int fallbackValue) {
+        int equipmentSum = cache.equipmentSum;
+        int backpackSum = cache.backpackSum;
+        int backpackMax = cache.getBackpackMax();
         double backpackAvg = (double) backpackSum / BACKPACK_SLOT_COUNT;
+        boolean papiEnabled = CommonUtil.checkPluginLoad("PlaceholderAPI");
+        boolean canResolvePlaceholders = player != null
+                && formulaUsesPlaceholders
+                && Bukkit.isPrimaryThread()
+                && papiEnabled;
         String expression = formula
                 .replace("{equipment_sum}", String.valueOf(equipmentSum))
                 .replace("{backpack_sum}", String.valueOf(backpackSum))
                 .replace("{backpack_max}", String.valueOf(backpackMax))
                 .replace("{backpack_avg}", String.valueOf(backpackAvg))
                 .replace("{backpack_count}", String.valueOf(BACKPACK_SLOT_COUNT));
+
+        if (canResolvePlaceholders) {
+            expression = PlaceholderAPI.setPlaceholders(player, expression);
+        }
+
+        if (PLACEHOLDER_PATTERN.matcher(expression).find()) {
+            if (!papiEnabled || canResolvePlaceholders) {
+                expression = PLACEHOLDER_PATTERN.matcher(expression).replaceAll("0");
+            } else {
+                return fallbackValue;
+            }
+        }
         return Math.max(0, (int) Math.round(MathUtil.doCalculate(expression)));
     }
 

@@ -1,3 +1,9 @@
+# Built-in variables:
+# {equipment_sum} {backpack_sum} {backpack_max} {backpack_avg} {backpack_count}
+# PlaceholderAPI placeholders that resolve to numbers are also supported when PlaceholderAPI is installed.
+# Built-in variables are refreshed when the player's inventory changes; PlaceholderAPI values are resolved in real time when power is read.
+# Example:
+# formula: "{equipment_sum} + %player_level% * 10"
 formula: "{equipment_sum} + {backpack_max} * 0.8 + {backpack_avg} * 0.2"
 incremental-slot-update: true
 
