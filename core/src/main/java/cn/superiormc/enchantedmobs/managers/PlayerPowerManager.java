@@ -27,14 +27,17 @@ public class PlayerPowerManager implements Listener {
     private static final int OFFHAND_SLOT = 40;
     private static final int BACKPACK_SLOT_COUNT = 36;
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("%[^%]+%");
+    private static final ThreadLocal<Boolean> RESOLVING_FORMULA_PLACEHOLDERS = ThreadLocal.withInitial(() -> false);
 
     private final Map<UUID, Integer> playerPower = new ConcurrentHashMap<>();
     private final Map<UUID, PlayerCache> playerCaches = new ConcurrentHashMap<>();
+    private final Map<UUID, PlaceholderValueCache> placeholderPowerCache = new ConcurrentHashMap<>();
     private final List<PowerStatRule> rules = new ArrayList<>();
 
     private String formula = "{equipment_sum} + ({backpack_max} + {backpack_avg}) / 2";
     private boolean incrementalUpdateEnabled = true;
     private boolean formulaUsesPlaceholders = false;
+    private long placeholderCacheMillis = 1000L;
 
     protected PlayerPowerManager() {
         playerPowerManager = this;
@@ -45,6 +48,7 @@ public class PlayerPowerManager implements Listener {
         loadRules();
         playerPower.clear();
         playerCaches.clear();
+        placeholderPowerCache.clear();
         for (Player player : Bukkit.getOnlinePlayers()) {
             initPlayer(player);
         }
@@ -57,6 +61,7 @@ public class PlayerPowerManager implements Listener {
         formula = config.getString("formula", "{equipment_sum} + ({backpack_max} + {backpack_avg}) / 2");
         formulaUsesPlaceholders = PLACEHOLDER_PATTERN.matcher(formula).find();
         incrementalUpdateEnabled = config.getBoolean("incremental-slot-update", true);
+        placeholderCacheMillis = Math.max(0L, config.getInt("placeholderapi-cache-ticks", 20)) * 50L;
 
         ConfigurationSection section = config.getConfigurationSection("rules");
         if (section == null) {
@@ -79,49 +84,68 @@ public class PlayerPowerManager implements Listener {
 
     public int getPlayerPower(Player player) {
         UUID uuid = player.getUniqueId();
+        int cachedValue = playerPower.getOrDefault(uuid, 0);
+        if (!Bukkit.isPrimaryThread()) {
+            return cachedValue;
+        }
         PlayerCache cache = playerCaches.get(uuid);
         if (cache == null) {
-            return playerPower.getOrDefault(uuid, 0);
+            return cachedValue;
         }
-
         boolean papiEnabled = CommonUtil.checkPluginLoad("PlaceholderAPI");
-        if (!formulaUsesPlaceholders || !Bukkit.isPrimaryThread() || !papiEnabled) {
-            return playerPower.compute(uuid, (ignored, oldValue) -> evaluateFormula(null, cache, oldValue == null ? 0 : oldValue));
+        if (!formulaUsesPlaceholders || !papiEnabled) {
+            return cachedValue;
         }
 
-        int value = evaluateFormula(player, cache, playerPower.getOrDefault(uuid, 0));
+        long now = System.currentTimeMillis();
+        PlaceholderValueCache placeholderCache = placeholderPowerCache.get(uuid);
+        if (placeholderCache != null && placeholderCache.expiresAt >= now) {
+            return placeholderCache.power;
+        }
+
+        int value = evaluateFormula(player, cache, cachedValue);
         playerPower.put(uuid, value);
+        if (placeholderCacheMillis > 0L) {
+            placeholderPowerCache.put(uuid, new PlaceholderValueCache(value, now + placeholderCacheMillis));
+        } else {
+            placeholderPowerCache.remove(uuid);
+        }
         return value;
+    }
+
+    public int getCachedPlayerPower(Player player) {
+        return playerPower.getOrDefault(player.getUniqueId(), 0);
+    }
+
+    public static boolean isResolvingFormulaPlaceholders() {
+        return RESOLVING_FORMULA_PLACEHOLDERS.get();
     }
 
     public void initPlayer(Player player) {
         UUID uuid = player.getUniqueId();
         ItemStack[] contents = cloneContents(player);
-
-        Bukkit.getScheduler().runTaskAsynchronously(EnchantedMobs.instance, () -> {
-            PlayerCache cache = new PlayerCache();
-            for (int slot = 0; slot < contents.length; slot++) {
-                int weight = computeWeight(contents[slot]);
-                cache.slotWeights.put(slot, weight);
-                if (isBackpackSlot(slot)) {
-                    cache.backpackSum += weight;
-                    cache.backpackWeightCounts.merge(weight, 1, Integer::sum);
-                } else if (isEquipmentSlot(slot)) {
-                    cache.equipmentSum += weight;
-                }
+        PlayerCache cache = new PlayerCache();
+        for (int slot = 0; slot < contents.length; slot++) {
+            int weight = computeWeight(contents[slot]);
+            cache.slotWeights.put(slot, weight);
+            if (isBackpackSlot(slot)) {
+                cache.backpackSum += weight;
+                cache.backpackWeightCounts.merge(weight, 1, Integer::sum);
+            } else if (isEquipmentSlot(slot)) {
+                cache.equipmentSum += weight;
             }
+        }
 
-            Bukkit.getScheduler().runTask(EnchantedMobs.instance, () -> {
-                playerCaches.put(uuid, cache);
-                playerPower.put(uuid, evaluateFormula(player, cache, playerPower.getOrDefault(uuid, 0)));
-            });
-        });
+        playerCaches.put(uuid, cache);
+        playerPower.put(uuid, evaluateFormula(player, cache, playerPower.getOrDefault(uuid, 0)));
+        placeholderPowerCache.remove(uuid);
     }
 
     public void removePlayer(Player player) {
         UUID uuid = player.getUniqueId();
         playerCaches.remove(uuid);
         playerPower.remove(uuid);
+        placeholderPowerCache.remove(uuid);
     }
 
     public void updateChangedSlots(Player player, Set<Integer> changedSlots) {
@@ -138,38 +162,34 @@ public class PlayerPowerManager implements Listener {
         for (int slot : changedSlots) {
             slotItems.put(slot, cloneItem(player.getInventory().getItem(slot)));
         }
+        Map<Integer, Integer> newWeights = new HashMap<>();
+        for (Map.Entry<Integer, ItemStack> entry : slotItems.entrySet()) {
+            newWeights.put(entry.getKey(), computeWeight(entry.getValue()));
+        }
 
-        Bukkit.getScheduler().runTaskAsynchronously(EnchantedMobs.instance, () -> {
-            Map<Integer, Integer> newWeights = new HashMap<>();
-            for (Map.Entry<Integer, ItemStack> entry : slotItems.entrySet()) {
-                newWeights.put(entry.getKey(), computeWeight(entry.getValue()));
+        PlayerCache current = playerCaches.computeIfAbsent(uuid, k -> new PlayerCache());
+
+        for (Map.Entry<Integer, Integer> entry : newWeights.entrySet()) {
+            int slot = entry.getKey();
+            int newWeight = entry.getValue();
+            int oldWeight = current.slotWeights.getOrDefault(slot, 0);
+            if (oldWeight == newWeight) {
+                continue;
             }
 
-            Bukkit.getScheduler().runTask(EnchantedMobs.instance, () -> {
-                PlayerCache current = playerCaches.computeIfAbsent(uuid, k -> new PlayerCache());
+            current.slotWeights.put(slot, newWeight);
 
-                for (Map.Entry<Integer, Integer> entry : newWeights.entrySet()) {
-                    int slot = entry.getKey();
-                    int newWeight = entry.getValue();
-                    int oldWeight = current.slotWeights.getOrDefault(slot, 0);
-                    if (oldWeight == newWeight) {
-                        continue;
-                    }
+            if (isBackpackSlot(slot)) {
+                current.backpackSum += newWeight - oldWeight;
+                decrementWeightCount(current.backpackWeightCounts, oldWeight);
+                current.backpackWeightCounts.merge(newWeight, 1, Integer::sum);
+            } else if (isEquipmentSlot(slot)) {
+                current.equipmentSum += newWeight - oldWeight;
+            }
+        }
 
-                    current.slotWeights.put(slot, newWeight);
-
-                    if (isBackpackSlot(slot)) {
-                        current.backpackSum += newWeight - oldWeight;
-                        decrementWeightCount(current.backpackWeightCounts, oldWeight);
-                        current.backpackWeightCounts.merge(newWeight, 1, Integer::sum);
-                    } else if (isEquipmentSlot(slot)) {
-                        current.equipmentSum += newWeight - oldWeight;
-                    }
-                }
-
-                playerPower.put(uuid, evaluateFormula(player, current, playerPower.getOrDefault(uuid, 0)));
-            });
-        });
+        playerPower.put(uuid, evaluateFormula(player, current, playerPower.getOrDefault(uuid, 0)));
+        placeholderPowerCache.remove(uuid);
     }
 
     private void decrementWeightCount(Map<Integer, Integer> weightCounts, int weight) {
@@ -202,15 +222,22 @@ public class PlayerPowerManager implements Listener {
                 .replace("{backpack_count}", String.valueOf(BACKPACK_SLOT_COUNT));
 
         if (canResolvePlaceholders) {
-            expression = PlaceholderAPI.setPlaceholders(player, expression);
+            if (isResolvingFormulaPlaceholders()) {
+                return fallbackValue;
+            }
+            RESOLVING_FORMULA_PLACEHOLDERS.set(true);
+            try {
+                expression = PlaceholderAPI.setPlaceholders(player, expression);
+            } finally {
+                RESOLVING_FORMULA_PLACEHOLDERS.remove();
+            }
         }
 
         if (PLACEHOLDER_PATTERN.matcher(expression).find()) {
-            if (!papiEnabled || canResolvePlaceholders) {
-                expression = PLACEHOLDER_PATTERN.matcher(expression).replaceAll("0");
-            } else {
+            if (papiEnabled && formulaUsesPlaceholders && player == null) {
                 return fallbackValue;
             }
+            expression = PLACEHOLDER_PATTERN.matcher(expression).replaceAll("0");
         }
         return Math.max(0, (int) Math.round(MathUtil.doCalculate(expression)));
     }
@@ -262,6 +289,8 @@ public class PlayerPowerManager implements Listener {
             return backpackWeightCounts.lastKey();
         }
     }
+
+    private record PlaceholderValueCache(int power, long expiresAt) {}
 
     private record PowerStatRule(ConfigurationSection matchItem, int addWeight) {}
 }

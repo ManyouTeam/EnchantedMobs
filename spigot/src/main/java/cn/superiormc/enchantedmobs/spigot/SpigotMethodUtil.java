@@ -162,6 +162,7 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
         Map<String, BossBar> playerBars = bossBarCache.computeIfAbsent(player.getUniqueId(), id -> new ConcurrentHashMap<>());
 
         BossBar bar = playerBars.get(barKey);
+        title =  TextUtil.parse(title, player);
         if (bar == null) {
             bar = Bukkit.createBossBar(
                     title,

@@ -152,10 +152,17 @@ public class PowerManager {
         if (location.getWorld() == null) {
             return -1;
         }
-        return getNearbyAveragePlayerPower(location.getWorld(), location.getX(), location.getZ(), range);
+        return getNearbyAveragePlayerPower(location.getWorld(), location.getX(), location.getZ(), range, true);
     }
 
-    private int getNearbyAveragePlayerPower(World world, double centerX, double centerZ, double range) {
+    public int getNearbyAverageCachedPlayerPower(Location location, double range) {
+        if (location.getWorld() == null) {
+            return -1;
+        }
+        return getNearbyAveragePlayerPower(location.getWorld(), location.getX(), location.getZ(), range, false);
+    }
+
+    private int getNearbyAveragePlayerPower(World world, double centerX, double centerZ, double range, boolean resolvePlaceholders) {
         double validRange = Math.max(0, range);
         double rangeSquared = validRange * validRange;
         int total = 0;
@@ -164,7 +171,9 @@ public class PowerManager {
             double dx = player.getLocation().getX() - centerX;
             double dz = player.getLocation().getZ() - centerZ;
             if ((dx * dx + dz * dz) <= rangeSquared) {
-                total += PlayerPowerManager.playerPowerManager.getPlayerPower(player);
+                total += resolvePlaceholders
+                        ? PlayerPowerManager.playerPowerManager.getPlayerPower(player)
+                        : PlayerPowerManager.playerPowerManager.getCachedPlayerPower(player);
                 count++;
             }
         }

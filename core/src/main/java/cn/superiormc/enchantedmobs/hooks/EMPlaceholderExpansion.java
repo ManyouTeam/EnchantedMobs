@@ -35,9 +35,17 @@ public class EMPlaceholderExpansion extends PlaceholderExpansion {
             return "0";
         }
         if (params.equalsIgnoreCase("player_power")) {
+            if (PlayerPowerManager.isResolvingFormulaPlaceholders()) {
+                return String.valueOf(PlayerPowerManager.playerPowerManager.getCachedPlayerPower(player.getPlayer()));
+            }
             return String.valueOf(PlayerPowerManager.playerPowerManager.getPlayerPower(player.getPlayer()));
         }
         if (params.equalsIgnoreCase("chunk_power")) {
+            if (PlayerPowerManager.isResolvingFormulaPlaceholders()) {
+                return String.valueOf(PowerManager.powerManager.getNearbyAverageCachedPlayerPower(
+                        player.getPlayer().getLocation(),
+                        ConfigManager.configManager.getInt("mob-power-generator.player-scan-range", 48)));
+            }
             return String.valueOf(PowerManager.powerManager.getNearbyAveragePlayerPower(
                     player.getPlayer().getLocation(),
                     ConfigManager.configManager.getInt("mob-power-generator.player-scan-range", 48)));
