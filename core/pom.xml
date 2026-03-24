@@ -7,7 +7,7 @@
     <parent>
         <groupId>cn.superiormc.enchantedmobs</groupId>
         <artifactId>EnchantedMobs</artifactId>
-        <version>1.0.5</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>core</artifactId>

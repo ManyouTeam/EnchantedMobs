@@ -8,7 +8,6 @@ import cn.superiormc.enchantedmobs.paper.listener.PaperPlayerPowerListener;
 import cn.superiormc.enchantedmobs.paper.listener.PaperTempBlockListener;
 import cn.superiormc.enchantedmobs.paper.methods.BuildItemPaper;
 import cn.superiormc.enchantedmobs.paper.methods.DebuildItemPaper;
-import cn.superiormc.enchantedmobs.listeners.DroppedItemListener;
 import cn.superiormc.enchantedmobs.paper.utils.PaperTextUtil;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import cn.superiormc.enchantedmobs.utils.SpecialMethodUtil;
@@ -72,6 +71,23 @@ public class PaperMethodUtil implements SpecialMethodUtil {
         profile.setProperty(new ProfileProperty("textures", skull));
         meta.setPlayerProfile(profile);
         return meta;
+    }
+
+    @Override
+    public String serializeSkull(SkullMeta meta) {
+        PlayerProfile profile = meta.getPlayerProfile();
+        if (profile != null) {
+            for (ProfileProperty property : profile.getProperties()) {
+                if ("textures".equalsIgnoreCase(property.getName()) && property.getValue() != null && !property.getValue().isEmpty()) {
+                    return property.getValue();
+                }
+            }
+        }
+
+        if (meta.getOwningPlayer() != null) {
+            return meta.getOwningPlayer().getName();
+        }
+        return null;
     }
 
     @Override

@@ -2,14 +2,12 @@ package cn.superiormc.enchantedmobs.spigot;
 
 import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.ConfigManager;
-import cn.superiormc.enchantedmobs.managers.ErrorManager;
 import cn.superiormc.enchantedmobs.spigot.listener.SpigotEntityScannerListener;
 import cn.superiormc.enchantedmobs.spigot.listener.SpigotPlayerPowerListener;
 import cn.superiormc.enchantedmobs.spigot.listener.SpigotTempBlockListener;
+import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import cn.superiormc.enchantedmobs.utils.SpecialMethodUtil;
 import cn.superiormc.enchantedmobs.utils.TextUtil;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -21,20 +19,22 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SpigotMethodUtil implements SpecialMethodUtil {
 
     private final Map<UUID, Map<String, BossBar>> bossBarCache = new ConcurrentHashMap<>();
     private final Map<UUID, Map<String, Long>> bossBarGenerations = new ConcurrentHashMap<>();
+    private static final Pattern TEXTURE_URL_PATTERN = Pattern.compile("\"url\"\\s*:\\s*\"(https?://textures\\.minecraft\\.net/texture/[^\"]+)\"");
 
     @Override
     public String methodID() {
@@ -56,36 +56,77 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
 
     @Override
     public SkullMeta setSkullMeta(SkullMeta meta, String skull) {
-        if (EnchantedMobs.newSkullMethod) {
-            try {
-                Class<?> profileClass = Class.forName("net.minecraft.world.item.component.ResolvableProfile");
-                Constructor<?> constroctor = profileClass.getConstructor(GameProfile.class);
-                GameProfile profile = new GameProfile(UUID.randomUUID(), "");
-                profile.getProperties().put("textures", new Property("textures", skull));
-                try {
-                    Method mtd = meta.getClass().getDeclaredMethod("setProfile", profileClass);
-                    mtd.setAccessible(true);
-                    mtd.invoke(meta, constroctor.newInstance(profile));
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                    ErrorManager.errorManager.sendErrorMessage("§cError: Can not parse skull texture in a item!");
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            GameProfile profile = new GameProfile(UUID.randomUUID(), "");
-            profile.getProperties().put("textures", new Property("textures", skull));
-            try {
-                Method mtd = meta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
-                mtd.setAccessible(true);
-                mtd.invoke(meta, profile);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                ErrorManager.errorManager.sendErrorMessage("§cError: Can not parse skull texture in a item!");
-            }
+        if (!CommonUtil.getMajorVersion(19)) {
+            return meta;
         }
+        try {
+            URL skinUrl = resolveSkinUrl(skull);
+            if (skinUrl == null) {
+                return meta;
+            }
+            PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID(), "custom_head");
+            PlayerTextures textures = profile.getTextures();
+            textures.setSkin(skinUrl);
+            profile.setTextures(textures);
+
+            meta.setOwnerProfile(profile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return meta;
+    }
+
+    @Override
+    public String serializeSkull(SkullMeta meta) {
+        if (!CommonUtil.getMajorVersion(19)) {
+            return null;
+        }
+        try {
+            PlayerProfile ownerProfile = meta.getOwnerProfile();
+            if (ownerProfile != null) {
+                ownerProfile.getTextures();
+                URL skinUrl = ownerProfile.getTextures().getSkin();
+                if (skinUrl != null) {
+                    return encodeSkinUrl(skinUrl);
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+
+        if (meta.getOwningPlayer() != null) {
+            return meta.getOwningPlayer().getName();
+        }
+        return null;
+    }
+
+    private URL resolveSkinUrl(String skull) throws Exception {
+        if (skull == null) {
+            return null;
+        }
+
+        String trimmedSkull = skull.trim();
+        if (trimmedSkull.isEmpty()) {
+            return null;
+        }
+
+        if (trimmedSkull.startsWith("http://textures.minecraft.net/texture/")
+                || trimmedSkull.startsWith("https://textures.minecraft.net/texture/")) {
+            return new URL(trimmedSkull);
+        }
+
+        String json = new String(Base64.getDecoder().decode(trimmedSkull), StandardCharsets.UTF_8);
+        Matcher matcher = TEXTURE_URL_PATTERN.matcher(json);
+
+        if (matcher.find()) {
+            return new URL(matcher.group(1));
+        }
+        return null;
+    }
+
+    private String encodeSkinUrl(URL skinUrl) {
+        String textureJson = "{\"textures\":{\"SKIN\":{\"url\":\"" + skinUrl + "\"}}}";
+        return Base64.getEncoder().encodeToString(textureJson.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override

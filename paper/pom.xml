@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.superiormc.enchantedmobs</groupId>
         <artifactId>EnchantedMobs</artifactId>
-        <version>1.0.5</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>paper</artifactId>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>cn.superiormc.enchantedmobs</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.5</version>
+            <version>${revision}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
