@@ -14,9 +14,9 @@ public class MathUtil {
             }
             return Crunch.evaluateExpression(mathStr);
         }
-        catch (NumberFormatException ep) {
+        catch (Throwable throwable) {
             if (ConfigManager.configManager.getBoolean("debug")) {
-                ep.printStackTrace();
+                throwable.printStackTrace();
             }
             ErrorManager.errorManager.sendErrorMessage("§cError: Your number option value " +
                     mathStr + " can not be read as a number, maybe" +
