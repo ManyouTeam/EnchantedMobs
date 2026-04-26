@@ -155,13 +155,13 @@
         <dependency>
             <groupId>net.momirealms</groupId>
             <artifactId>craft-engine-core</artifactId>
-            <version>0.0.34</version>
+            <version>26.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.momirealms</groupId>
             <artifactId>craft-engine-bukkit</artifactId>
-            <version>0.0.34</version>
+            <version>26.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -171,10 +171,10 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>fr.skytasul</groupId>
-            <artifactId>guardianbeam</artifactId>
-            <version>2.4.6</version>
-            <scope>compile</scope>
+            <groupId>com.github.retrooper</groupId>
+            <artifactId>packetevents-api</artifactId>
+            <version>2.10.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>

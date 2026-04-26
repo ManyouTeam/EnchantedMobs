@@ -4,21 +4,24 @@ main: cn.superiormc.enchantedmobs.EnchantedMobs
 api-version: '1.21.2'
 author: PQguanfang
 softdepend:
+  # Item
   - MMOItems
-  - MythicLib
   - ItemsAdder
   - Oraxen
+  - Nexo
   - EcoItems
   - EcoArmor
-  - PlaceholderAPI
   - MythicMobs
+  - ExecutableItems
   - CraftEngine
   - NeigeItems
-  - ExecutableItems
+  - eco
+  # Others
+  - PlaceholderAPI
   - MythicChanger
   - NBTAPI
   - LevelledMobs
-  - MythicChanger
+  - packetevents
 commands:
   enchantedmobs:
     aliases:
