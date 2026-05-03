@@ -1,6 +1,8 @@
 package cn.superiormc.enchantedmobs.managers;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
+import cn.gtemc.itembridge.api.ItemBridge;
+import cn.gtemc.itembridge.api.util.Pair;
+import cn.gtemc.itembridge.core.BukkitItemBridge;
 import cn.superiormc.enchantedmobs.hooks.EMPlaceholderExpansion;
 import cn.superiormc.enchantedmobs.hooks.items.*;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
@@ -10,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class HookManager {
 
@@ -17,9 +20,18 @@ public class HookManager {
 
     private Map<String, AbstractItemHook> itemHooks;
 
+    private ItemBridge<ItemStack, Player> itemBridgeHook = null;
+
     public HookManager() {
         hookManager = this;
-        initItemHook();
+        if (ConfigManager.configManager.getString("hook-item-method").equalsIgnoreCase("DEFAULT")) {
+            initItemHook();
+        } else {
+            itemBridgeHook = BukkitItemBridge.builder()
+                    .onHookSuccess(p -> TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fUSItemBridge successfully hook into " + p + "."))
+                    .detectSupportedPlugins()
+                    .build();
+        }
         initPlaceholders();
     }
 
@@ -75,6 +87,12 @@ public class HookManager {
     }
 
     public ItemStack getHookItem(Player player, String pluginName, String itemID) {
+        if (itemBridgeHook != null) {
+            Optional<ItemStack> tempVal1 = itemBridgeHook.build(pluginName, player, itemID);
+            if (tempVal1.isPresent()) {
+                return tempVal1.get();
+            }
+        }
         if (!itemHooks.containsKey(pluginName)) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into "
                     + pluginName + " plugin, maybe we do not support this plugin, or your server didn't correctly load " +
@@ -98,21 +116,13 @@ public class HookManager {
         return hookItem.getType().name().toLowerCase();
     }
 
-    public String getHookItemID(String pluginName, ItemStack hookItem) {
-        if (!hookItem.hasItemMeta()) {
-            return null;
-        }
-        if (!itemHooks.containsKey(pluginName)) {
-            ErrorManager.errorManager.sendErrorMessage("§cError: Can not hook into "
-                    + pluginName + " plugin, maybe we do not support this plugin, or your server didn't correctly load " +
-                    "this plugin!");
-            return null;
-        }
-        AbstractItemHook itemHook = itemHooks.get(pluginName);
-        return itemHook.getIDByItemStack(hookItem);
-    }
-
     public String[] getHookItemPluginAndID(ItemStack hookItem) {
+        if (itemBridgeHook != null) {
+            Pair<String, String> tempVal1 = itemBridgeHook.getFirstId(hookItem);
+            if (tempVal1 != null) {
+                return new String[]{tempVal1.left, tempVal1.right};
+            }
+        }
         for (AbstractItemHook itemHook : itemHooks.values()) {
             String itemID = itemHook.getIDByItemStack(hookItem);
             if (itemID != null) {

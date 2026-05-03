@@ -21,7 +21,7 @@
     <properties>
         <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>1.0.8</revision>
+        <revision>1.0.9</revision>
         <name>EnchantedMobs</name>
     </properties>
 
@@ -39,7 +39,23 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.6.2</version>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>cn.superiormc.enchantedmobs.libs.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.json</pattern>
+                            <shadedPattern>cn.superiormc.enchantedmobs.libs.json</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>redempt.crunch</pattern>
+                            <shadedPattern>cn.superiormc.enchantedmobs.libs.crunch</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -148,6 +164,10 @@
         <repository>
             <id>repo-lanink-cn</id>
             <url>https://repo.lanink.cn/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>gtemc-repo</id>
+            <url>https://repo.gtemc.net/releases/</url>
         </repository>
     </repositories>
 
