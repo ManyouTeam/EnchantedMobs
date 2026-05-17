@@ -1,4 +1,3 @@
-# 火球远程型：发射火球进行区域压制。
 enabled: true
 placeholder: '{lang:power.ghastly}'
 apply-rules:

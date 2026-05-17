@@ -1,5 +1,3 @@
-# 在玩家的脚下生成蜘蛛网。
-
 enabled: true
 placeholder: '{lang:power.web_attack}'
 

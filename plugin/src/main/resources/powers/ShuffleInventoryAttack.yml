@@ -1,5 +1,3 @@
-# 近战命中时打乱玩家背包栏位。
-
 enabled: true
 placeholder: '{lang:power.shuffle_inventory}'
 

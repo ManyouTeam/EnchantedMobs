@@ -1,5 +1,3 @@
-# 在目标区域上空召唤箭雨。
-
 enabled: true
 placeholder: '{lang:power.arrow_rain}'
 

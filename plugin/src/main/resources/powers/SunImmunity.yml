@@ -1,5 +1,3 @@
-# 亡灵生物将不会在白天燃烧。
-
 enabled: true
 placeholder: '{lang:power.sun_immunity}'
 

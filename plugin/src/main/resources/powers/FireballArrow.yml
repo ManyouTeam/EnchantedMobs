@@ -1,5 +1,3 @@
-# 发射火球
-
 enabled: true
 placeholder: '{lang:power.fireball_shot}'
 

@@ -37,6 +37,8 @@ public class PowerManager {
     private BukkitTask bossBarTask;
 
     private final Map<UUID, Set<String>> playerMobBossBars = new HashMap<>();
+    private final Map<UUID, TargetCombatState> targetCombatStates = new HashMap<>();
+    private long lastTargetCombatStateCleanupAt = 0L;
 
     public PowerManager() {
         powerManager = this;
@@ -52,6 +54,7 @@ public class PowerManager {
 
     private void initTask() {
         this.task = Bukkit.getScheduler().runTaskTimer(EnchantedMobs.instance, () -> {
+            cleanupTargetCombatStates();
             //Bukkit.getConsoleSender().sendMessage("[Debug] 1");
             for (LivingEntity entity : EntityScannerManager.entityScannerManager.getLivingEntities()) {
                 if (!(entity instanceof Monster monster)) {
@@ -66,9 +69,12 @@ public class PowerManager {
                 forEachActivePower(entity, null, "on-tick", (power, l) -> power.onTick(l, handler), null);
                 //Bukkit.getConsoleSender().sendMessage("[Debug] Tick entity: " + monster.getName());
                 if (monster.getTarget() != null) {
+                    trackTargetCombatState(monster, monster.getTarget());
                     //Bukkit.getConsoleSender().sendMessage("[Debug] Target entity: " + monster.getName());
                     TickTargetHandler tickTargetHandler = new TickTargetHandler(monster);
                     forEachActivePower(entity, null, "on-target-tick", (power, l) -> power.onTargetTick(l, tickTargetHandler), null);
+                } else {
+                    targetCombatStates.remove(monster.getUniqueId());
                 }
             }
         }, 1L, 1L);
@@ -543,6 +549,9 @@ public class PowerManager {
         if (handler.replacedNewDamage && !event.isCancelled()) {
             event.setDamage(Math.max(0, handler.damage));
         }
+        if (!event.isCancelled()) {
+            trackSuccessfulTargetAttack(damageEntity, event.getEntity());
+        }
     }
 
     public void handleDeath(EntityDeathEvent event) {
@@ -564,12 +573,16 @@ public class PowerManager {
         if (target == null) {
             return;
         }
+        if (entity instanceof Mob mob) {
+            trackTargetCombatState(mob, target);
+        }
         TargetHandler handler = new TargetHandler(entity, target, event.getReason());
         forEachActivePower(entity, null, "on-target", (power, level) -> power.onTarget(level, handler), event::setCancelled);
     }
 
     public void handleUntag(EntityTargetEvent event) {
         Entity entity = event.getEntity();
+        targetCombatStates.remove(entity.getUniqueId());
         UntagHandler handler = new UntagHandler(entity, event.getReason());
         forEachActivePower(entity, null, "on-untag", (power, level) -> power.onUntag(level, handler), event::setCancelled);
     }
@@ -600,6 +613,51 @@ public class PowerManager {
         }
     }
 
+    public boolean hasTargetWithoutAttackFor(Entity source, Entity target, long ticks) {
+        if (source == null || target == null) {
+            return false;
+        }
+        TargetCombatState state = targetCombatStates.get(source.getUniqueId());
+        if (state == null || !state.targetId.equals(target.getUniqueId())) {
+            return false;
+        }
+
+        long now = System.currentTimeMillis();
+        long requiredMillis = Math.max(0L, ticks) * 50L;
+        long lastProgress = Math.max(state.targetAcquiredAt, state.lastAttackAt);
+        return now - lastProgress >= requiredMillis;
+    }
+
+    private void trackTargetCombatState(Mob mob, Entity target) {
+        UUID mobId = mob.getUniqueId();
+        UUID targetId = target.getUniqueId();
+        long now = System.currentTimeMillis();
+        TargetCombatState state = targetCombatStates.get(mobId);
+        if (state == null || !state.targetId.equals(targetId)) {
+            targetCombatStates.put(mobId, new TargetCombatState(targetId, now, 0L, now));
+            return;
+        }
+        state.lastSeenAt = now;
+    }
+
+    private void trackSuccessfulTargetAttack(Entity attacker, Entity victim) {
+        TargetCombatState state = targetCombatStates.get(attacker.getUniqueId());
+        if (state == null || !state.targetId.equals(victim.getUniqueId())) {
+            return;
+        }
+        state.lastAttackAt = System.currentTimeMillis();
+        state.lastSeenAt = state.lastAttackAt;
+    }
+
+    private void cleanupTargetCombatStates() {
+        long now = System.currentTimeMillis();
+        if (now - lastTargetCombatStateCleanupAt < 30000L) {
+            return;
+        }
+        lastTargetCombatStateCleanupAt = now;
+        targetCombatStates.entrySet().removeIf(entry -> now - entry.getValue().lastSeenAt >= 60000L);
+    }
+
     private void forEachActivePower(Entity owner, Entity skillEntity, String eventKey, PowerExecution execution, Consumer<Boolean> cancelCallback) {
         List<String> powerIDs = EntityScannerManager.entityScannerManager.getEntityPowerCache(owner);
         if (powerIDs == null) {
@@ -623,6 +681,20 @@ public class PowerManager {
     }
 
     private record CandidatePower(String powerId, String group, int cost, int weight) {
+    }
+
+    private static class TargetCombatState {
+        private final UUID targetId;
+        private final long targetAcquiredAt;
+        private long lastAttackAt;
+        private long lastSeenAt;
+
+        private TargetCombatState(UUID targetId, long targetAcquiredAt, long lastAttackAt, long lastSeenAt) {
+            this.targetId = targetId;
+            this.targetAcquiredAt = targetAcquiredAt;
+            this.lastAttackAt = lastAttackAt;
+            this.lastSeenAt = lastSeenAt;
+        }
     }
 
     @FunctionalInterface

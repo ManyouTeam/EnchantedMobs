@@ -1,5 +1,3 @@
-# 发射的不是箭而是TNT。
-
 enabled: true
 placeholder: '{lang:power.tnt_shot}'
 

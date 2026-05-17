@@ -24,9 +24,8 @@ public class HookManager {
 
     public HookManager() {
         hookManager = this;
-        if (ConfigManager.configManager.getString("hook-item-method").equalsIgnoreCase("DEFAULT")) {
-            initItemHook();
-        } else {
+        initItemHook();
+        if (ConfigManager.configManager.getString("hook-item-method").equalsIgnoreCase("ITEMBRIDGE")) {
             itemBridgeHook = BukkitItemBridge.builder()
                     .onHookSuccess(p -> TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fUSItemBridge successfully hook into " + p + "."))
                     .detectSupportedPlugins()

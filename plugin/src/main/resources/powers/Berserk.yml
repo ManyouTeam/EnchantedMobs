@@ -1,4 +1,3 @@
-# 狂暴反击型：近战输出和受击反伤同时提升。
 enabled: true
 placeholder: '{lang:power.berserk}'
 apply-rules:

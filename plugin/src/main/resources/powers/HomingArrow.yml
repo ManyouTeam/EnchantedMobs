@@ -1,5 +1,3 @@
-# 发射自瞄箭
-
 enabled: true
 placeholder: '{lang:power.homing_arrow}'
 

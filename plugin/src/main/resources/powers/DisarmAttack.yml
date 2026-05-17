@@ -1,5 +1,3 @@
-# 近战命中时缴械玩家主手。
-
 enabled: true
 placeholder: '{lang:power.disarm}'
 

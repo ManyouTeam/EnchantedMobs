@@ -1,5 +1,3 @@
-# 有此能力的怪物射出的抛掷物落地后将会爆炸。
-
 enabled: true
 placeholder: '{lang:power.explosion_arrow}'
 

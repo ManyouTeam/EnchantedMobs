@@ -1,5 +1,3 @@
-# 近战攻击时吸血并可额外伤害。
-
 enabled: true
 placeholder: '{lang:power.lifesteal}'
 

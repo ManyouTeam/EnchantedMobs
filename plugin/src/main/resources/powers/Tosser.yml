@@ -1,4 +1,3 @@
-# 击飞控制型：近战命中后概率强力抛投目标。
 enabled: true
 placeholder: '{lang:power.tosser}'
 apply-rules:

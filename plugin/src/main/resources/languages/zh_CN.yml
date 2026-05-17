@@ -64,6 +64,7 @@ override-lang:
   power.tosser: "抛投"
   power.summoner: "召唤者"
   power.creeper_expert: "苦力怕专家"
+  power.sonic_boom: "音波冲击"
   entity.blaze: "烈焰人"
   entity.bogged: "沼骸"
   entity.breeze: "旋风人"

@@ -1,5 +1,3 @@
-# 冰冻
-
 enabled: true
 placeholder: '{lang:power.freeze}'
 

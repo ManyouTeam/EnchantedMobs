@@ -1,5 +1,3 @@
-# 攻击后着火
-
 enabled: true
 placeholder: '{lang:power.burning}'
 

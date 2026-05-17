@@ -64,6 +64,7 @@ override-lang:
   power.tosser: "Tosser"
   power.summoner: "Summoner"
   power.creeper_expert: "Creeper Expert"
+  power.sonic_boom: "Sonic Boom"
   entity.blaze: "Blaze"
   entity.bogged: "Bogged"
   entity.breeze: "Breeze"

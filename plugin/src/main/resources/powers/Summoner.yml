@@ -1,5 +1,3 @@
-# 召唤小怪。
-
 enabled: true
 placeholder: '{lang:power.summoner}'
 

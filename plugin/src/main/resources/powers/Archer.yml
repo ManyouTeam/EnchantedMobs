@@ -1,5 +1,3 @@
-# 远程箭雨型：周期性发射三连箭压制目标。
-
 enabled: true
 placeholder: '{lang:power.archer}'
 apply-rules:

@@ -1,5 +1,3 @@
-# 强化苦力怕爆炸参数。
-
 enabled: true
 placeholder: '{lang:power.creeper_expert}'
 

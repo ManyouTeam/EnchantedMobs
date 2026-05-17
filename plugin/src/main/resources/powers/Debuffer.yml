@@ -1,4 +1,3 @@
-# 复合减益型：近战命中后按等级施加多种负面状态。
 enabled: true
 placeholder: '{lang:power.debuffer}'
 apply-rules:

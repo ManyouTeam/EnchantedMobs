@@ -1,5 +1,3 @@
-# 肉盾减伤型：常驻抗性提升生存能力。
-
 enabled: true
 placeholder: '{lang:power.bullwark}'
 apply-rules:

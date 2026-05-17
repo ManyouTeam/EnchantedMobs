@@ -1,4 +1,3 @@
-# 死灵远程型：周期性发射凋灵骷髅头。
 enabled: true
 placeholder: '{lang:power.necromancer}'
 apply-rules:

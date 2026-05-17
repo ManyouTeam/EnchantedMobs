@@ -1,4 +1,3 @@
-# 潜行隐匿型：常驻隐身提升突袭性。
 enabled: true
 placeholder: '{lang:power.cloaked}'
 apply-rules:

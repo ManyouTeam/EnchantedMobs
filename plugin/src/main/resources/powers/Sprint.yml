@@ -1,4 +1,3 @@
-# 追击冲锋型：出生时提升移动速度。
 enabled: true
 placeholder: '{lang:power.sprint}'
 apply-rules:

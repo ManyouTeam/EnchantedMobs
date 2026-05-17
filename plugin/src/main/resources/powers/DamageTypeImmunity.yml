@@ -1,5 +1,3 @@
-# 只能近战造成伤害。
-
 enabled: true
 placeholder: '{lang:power.damage_immunity}'
 

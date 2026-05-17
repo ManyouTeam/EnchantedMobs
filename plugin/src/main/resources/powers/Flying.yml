@@ -1,5 +1,3 @@
-# 让玩家浮空
-
 enabled: true
 placeholder: 'Flying'
 apply-rules:

@@ -473,6 +473,12 @@ public class ObjectPower extends AdvancedSection {
         if (maxTimes > 0 && timesMap.getOrDefault(uuid, 0) >= maxTimes) {
             return false;
         }
+
+        int noAttackTicks = Math.max(0, getInt("limit.no-attack-ticks", 0, level));
+        if (noAttackTicks > 0 && !matchNoAttackTicks(entity, noAttackTicks)) {
+            return false;
+        }
+
         if (cooldownMap.containsKey(uuid)) {
             long nextTime = cooldownMap.get(uuid);
             if (now < nextTime) {
@@ -497,6 +503,17 @@ public class ObjectPower extends AdvancedSection {
         }
 
         return true;
+    }
+
+    private boolean matchNoAttackTicks(Entity entity, int noAttackTicks) {
+        if (!(entity instanceof Mob mob)) {
+            return false;
+        }
+        Entity target = mob.getTarget();
+        if (target == null) {
+            return false;
+        }
+        return PowerManager.powerManager.hasTargetWithoutAttackFor(entity, target, noAttackTicks);
     }
 
     public void cleanCooldown() {
