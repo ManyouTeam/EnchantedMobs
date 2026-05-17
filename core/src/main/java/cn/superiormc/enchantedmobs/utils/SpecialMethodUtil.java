@@ -57,6 +57,8 @@ public interface SpecialMethodUtil {
 
     void setEntityName(LivingEntity entity, String name);
 
+    String getEntityCustomName(LivingEntity entity);
+
     ItemStack editItemStack(ItemStack item,
                             Player player,
                             ConfigurationSection section,

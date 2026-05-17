@@ -24,7 +24,7 @@ command:
 mob-spawned: "&#98FB98[EnchantedMobs] &fMob spawned successfully!"
 item-back: "&#98FB98[EnchantedMobs] &fYour dropped item going back to your backpack!"
 mob-powered-notify: "&#98FB98[EnchantedMobs] &ePowered mob spawned: &f{mob} &7@ &b{world}({x}, {y}, {z})"
-dupe-removed: "&#98FB98[UltimateShop] &fA illegal item from your inventory has been removed!"
+dupe-removed: "&#98FB98[EnchantedMobs] &fA illegal item from your inventory has been removed!"
 
 override-lang:
   power.freeze: "Freeze"
@@ -65,6 +65,8 @@ override-lang:
   power.summoner: "Summoner"
   power.creeper_expert: "Creeper Expert"
   power.sonic_boom: "Sonic Boom"
+  power.evoker_fangs: "Evoker Fangs"
+  power.shulker_bullet: "Shulker Bullet"
   entity.blaze: "Blaze"
   entity.bogged: "Bogged"
   entity.breeze: "Breeze"

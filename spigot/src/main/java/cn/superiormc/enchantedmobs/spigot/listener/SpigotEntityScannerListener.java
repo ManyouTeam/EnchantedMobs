@@ -17,7 +17,7 @@ public class SpigotEntityScannerListener extends EntityScannerManager implements
         Bukkit.getPluginManager().registerEvents(this, EnchantedMobs.instance);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSpawn(EntitySpawnEvent event) {
         updateEntityCache(event.getEntity());
     }

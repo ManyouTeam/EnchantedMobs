@@ -184,6 +184,9 @@ public class TextUtil {
     }
 
     public static String parse(String text) {
+        if (text == null) {
+            return null;
+        }
         return EnchantedMobs.methodUtil.legacyParse(text);
     }
 

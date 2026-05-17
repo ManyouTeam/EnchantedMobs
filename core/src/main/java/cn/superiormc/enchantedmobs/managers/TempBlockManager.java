@@ -1,12 +1,11 @@
 package cn.superiormc.enchantedmobs.managers;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,7 +41,7 @@ public abstract class TempBlockManager {
         block.setType(material, false);
 
         // 创建定时任务
-        BukkitTask task = Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> removeTempBlock(location), duration);
+        SchedulerUtil task = SchedulerUtil.runTaskLater(location, () -> removeTempBlock(location), duration);
 
         tempBlocks.put(key, new TempBlockData(originalData, task));
     }
@@ -95,7 +94,7 @@ public abstract class TempBlockManager {
         );
     }
 
-    private record TempBlockData(BlockData originalData, BukkitTask task) {
+    private record TempBlockData(BlockData originalData, SchedulerUtil task) {
 
     }
 }

@@ -1,9 +1,11 @@
 enabled: true
-placeholder: 'Flying'
+placeholder: '{lang:power.flying}'
 apply-rules:
   group: potion
   group-unique: true
   weight: 1
+  conflicts:
+    - ShulkerBullet
   match-entity:
     any: true
   level-weight: 35

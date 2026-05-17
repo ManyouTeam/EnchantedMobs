@@ -1,5 +1,7 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
+import cn.superiormc.enchantedmobs.EnchantedMobs;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,22 +23,31 @@ public class TeleportNearTargetAbility extends AbstractAbility {
             return false;
         }
 
-        double minRadius = Math.max(1.0, getDouble("min-radius", 3.0, context.level()));
-        double maxRadius = Math.max(minRadius, getDouble("max-radius", 8.0, context.level()));
-        int maxTry = Math.max(1, getInt("max-tries", 12, context.level()));
+        if (EnchantedMobs.isFolia) {
+            SchedulerUtil.runSync(living, () -> teleportNear(living, context.level()));
+            return false;
+        }
+
+        teleportNear(living, context.level());
+        return false;
+    }
+
+    private void teleportNear(LivingEntity living, int level) {
+        double minRadius = Math.max(1.0, getDouble("min-radius", 3.0, level));
+        double maxRadius = Math.max(minRadius, getDouble("max-radius", 8.0, level));
+        int maxTry = Math.max(1, getInt("max-tries", 12, level));
 
         for (int i = 0; i < maxTry; i++) {
-            Location candidate = randomAround(target.getLocation(), minRadius, maxRadius);
+            Location candidate = randomAround(living.getLocation(), minRadius, maxRadius);
             Location safe = findSafeLocation(candidate);
             if (safe == null) {
                 continue;
             }
             safe.setYaw(living.getLocation().getYaw());
             safe.setPitch(living.getLocation().getPitch());
-            living.teleport(safe);
-            return false;
+            SchedulerUtil.teleport(living, safe);
+            return;
         }
-        return false;
     }
 
     private Location randomAround(Location center, double minRadius, double maxRadius) {

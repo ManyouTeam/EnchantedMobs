@@ -21,7 +21,7 @@
     <properties>
         <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>1.1.0</revision>
+        <revision>1.1.1</revision>
         <name>EnchantedMobs</name>
     </properties>
 
@@ -53,6 +53,10 @@
                         <relocation>
                             <pattern>redempt.crunch</pattern>
                             <shadedPattern>cn.superiormc.enchantedmobs.libs.crunch</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>cn.gtemc.itembridge</pattern>
+                            <shadedPattern>cn.superiormc.enchantedmobs.libs.itembridge</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

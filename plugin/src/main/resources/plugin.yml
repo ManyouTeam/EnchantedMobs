@@ -2,6 +2,7 @@ name: EnchantedMobs
 version: '${project.version}'
 main: cn.superiormc.enchantedmobs.EnchantedMobs
 api-version: '1.21.2'
+folia-supported: true
 author: PQguanfang
 softdepend:
   # Item

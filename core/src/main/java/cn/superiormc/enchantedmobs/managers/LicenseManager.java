@@ -39,7 +39,7 @@ public final class LicenseManager {
 
     public LicenseManager() {
         licenseManager = this;
-        this.valid = checkIllegal("cn.superiormc.ultimateshop.UltimateShop", "UltimateShop");
+        this.valid = checkIllegal("cn.superiormc.enchantedmobs.EnchantedMobs", "EnchantedMobs");
 
         detectSourceAndUser();
         printStartupInfo();

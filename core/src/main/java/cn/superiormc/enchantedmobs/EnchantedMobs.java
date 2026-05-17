@@ -12,13 +12,15 @@ public final class EnchantedMobs extends JavaPlugin {
 
     public static EnchantedMobs instance;
 
+    public static SpecialMethodUtil methodUtil;
+
+    public static boolean isFolia = false;
+
     public static int yearVersion;
 
     public static int majorVersion;
 
     public static int minorVersion;
-
-    public static SpecialMethodUtil methodUtil;
 
     @Override
     public void onEnable() {
@@ -49,6 +51,12 @@ public final class EnchantedMobs extends JavaPlugin {
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
                 Bukkit.getPluginManager().disablePlugin(this);
             }
+        }
+        if (CommonUtil.getClass("io.papermc.paper.threadedregions.RegionizedServer")) {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fFolia is found, enabled Folia compatibility feature!");
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §6Warning: Folia support is not fully test, major bugs maybe found! " +
+                    "Please do not use in production environment!");
+            isFolia = true;
         }
         new ErrorManager();
         new InitManager();

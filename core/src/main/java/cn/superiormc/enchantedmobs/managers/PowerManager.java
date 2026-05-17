@@ -5,6 +5,7 @@ import cn.superiormc.enchantedmobs.objects.power.ObjectPower;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import cn.superiormc.enchantedmobs.objects.power.events.*;
 import cn.superiormc.enchantedmobs.utils.DebugUtil;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import cn.superiormc.enchantedmobs.utils.TextUtil;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -16,8 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -32,9 +31,9 @@ public class PowerManager {
 
     private final Map<String, ObjectPower> powers = new HashMap<>();
 
-    private BukkitTask task;
+    private SchedulerUtil task;
 
-    private BukkitTask bossBarTask;
+    private SchedulerUtil bossBarTask;
 
     private final Map<UUID, Set<String>> playerMobBossBars = new HashMap<>();
     private final Map<UUID, TargetCombatState> targetCombatStates = new HashMap<>();
@@ -53,77 +52,90 @@ public class PowerManager {
     }
 
     private void initTask() {
-        this.task = Bukkit.getScheduler().runTaskTimer(EnchantedMobs.instance, () -> {
+        this.task = SchedulerUtil.runTaskTimer(() -> {
             cleanupTargetCombatStates();
             //Bukkit.getConsoleSender().sendMessage("[Debug] 1");
             for (LivingEntity entity : EntityScannerManager.entityScannerManager.getLivingEntities()) {
-                if (!(entity instanceof Monster monster)) {
-                    continue;
-                }
-                //Bukkit.getConsoleSender().sendMessage("[Debug] 2");
-                int level = EntityScannerManager.entityScannerManager.getEntityLevelCache(entity);
-                if (level < 0) {
-                    continue;
-                }
-                TickHandler handler = new TickHandler(entity);
-                forEachActivePower(entity, null, "on-tick", (power, l) -> power.onTick(l, handler), null);
-                //Bukkit.getConsoleSender().sendMessage("[Debug] Tick entity: " + monster.getName());
-                if (monster.getTarget() != null) {
-                    trackTargetCombatState(monster, monster.getTarget());
-                    //Bukkit.getConsoleSender().sendMessage("[Debug] Target entity: " + monster.getName());
-                    TickTargetHandler tickTargetHandler = new TickTargetHandler(monster);
-                    forEachActivePower(entity, null, "on-target-tick", (power, l) -> power.onTargetTick(l, tickTargetHandler), null);
+                if (EnchantedMobs.isFolia) {
+                    SchedulerUtil.runSync(entity, () -> tickEntity(entity));
                 } else {
-                    targetCombatStates.remove(monster.getUniqueId());
+                    tickEntity(entity);
                 }
             }
         }, 1L, 1L);
-        this.bossBarTask = Bukkit.getScheduler().runTaskTimer(EnchantedMobs.instance, this::updateBossBars, 20L, 20L);
+        this.bossBarTask = SchedulerUtil.runTaskTimer(this::updateBossBars, 20L, 20L);
+    }
+
+    private void tickEntity(LivingEntity entity) {
+        if (!(entity instanceof Monster monster)) {
+            return;
+        }
+        int level = EntityScannerManager.entityScannerManager.getEntityLevelCache(entity);
+        if (level < 0) {
+            return;
+        }
+        TickHandler handler = new TickHandler(entity);
+        forEachActivePower(entity, null, "on-tick", (power, l) -> power.onTick(l, handler), null);
+        if (monster.getTarget() != null) {
+            trackTargetCombatState(monster, monster.getTarget());
+            TickTargetHandler tickTargetHandler = new TickTargetHandler(monster);
+            forEachActivePower(entity, null, "on-target-tick", (power, l) -> power.onTargetTick(l, tickTargetHandler), null);
+        } else {
+            targetCombatStates.remove(monster.getUniqueId());
+        }
     }
 
     private void updateBossBars() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (EnchantedMobs.isFolia) {
+                SchedulerUtil.runSync(player, () -> updateBossBar(player));
+            } else {
+                updateBossBar(player);
+            }
+        }
+    }
+
+    private void updateBossBar(Player player) {
         int minPowers = ConfigManager.configManager.getInt("mob-display.bossbar.min-powers", 2);
         double radius = ConfigManager.configManager.getInt("mob-display.bossbar.radius", 16);
         String title = ConfigManager.configManager.getString("mob-display.bossbar.title", "&c{entity} &7[{health}/{max-health}] &f{powers_full}");
         String color = ConfigManager.configManager.getString("mob-display.bossbar.color", "RED");
         String style = ConfigManager.configManager.getString("mob-display.bossbar.style", "SOLID");
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            Set<String> visibleKeys = new HashSet<>();
-            if (player.isDead()) {
-                hideStaleMobBossBars(player, visibleKeys);
+        Set<String> visibleKeys = new HashSet<>();
+        if (player.isDead()) {
+            hideStaleMobBossBars(player, visibleKeys);
+            return;
+        }
+        for (Entity nearby : player.getNearbyEntities(radius, radius, radius)) {
+            if (!(nearby instanceof Monster living) || living.isDead()) {
                 continue;
             }
-            for (Entity nearby : player.getNearbyEntities(radius, radius, radius)) {
-                if (!(nearby instanceof Monster living) || living.isDead()) {
-                    continue;
-                }
-                List<String> powerIDs = EntityScannerManager.entityScannerManager.getEntityPowerCache(nearby);
-                if (powerIDs == null || powerIDs.size() < minPowers) {
-                    continue;
-                }
-                String bossBarKey = "mob-" + nearby.getUniqueId();
-                visibleKeys.add(bossBarKey);
-
-                int level = Math.max(1, EntityScannerManager.entityScannerManager.getEntityLevelCache(nearby));
-                String powersFull = String.join(separatorFromConfig(), getPowerPlaceholders(powerIDs, level, player));
-                double maxHealth = CommonUtil.getMaxHealth(living);
-                if (maxHealth <= 0) {
-                    continue;
-                }
-                float progress = (float) Math.max(0, Math.min(1, living.getHealth() / maxHealth));
-
-                String parsed = title
-                        .replace("{entity}", getBossBarEntityName(living, player))
-                        .replace("{mob}", EnchantedMobs.methodUtil.getEntityName(living))
-                        .replace("{health}", String.format(Locale.US, "%.1f", living.getHealth()))
-                        .replace("{max-health}", String.format(Locale.US, "%.1f", maxHealth))
-                        .replace("{powers_full}", powersFull);
-
-                EnchantedMobs.methodUtil.sendBossBar(player, parsed, progress, color, style, bossBarKey);
+            List<String> powerIDs = EntityScannerManager.entityScannerManager.getEntityPowerCache(nearby);
+            if (powerIDs == null || powerIDs.size() < minPowers) {
+                continue;
             }
-            hideStaleMobBossBars(player, visibleKeys);
+            String bossBarKey = "mob-" + nearby.getUniqueId();
+            visibleKeys.add(bossBarKey);
+
+            int level = Math.max(1, EntityScannerManager.entityScannerManager.getEntityLevelCache(nearby));
+            String powersFull = String.join(separatorFromConfig(), getPowerPlaceholders(powerIDs, level, player));
+            double maxHealth = CommonUtil.getMaxHealth(living);
+            if (maxHealth <= 0) {
+                continue;
+            }
+            float progress = (float) Math.max(0, Math.min(1, living.getHealth() / maxHealth));
+
+            String parsed = title
+                    .replace("{entity}", getBossBarEntityName(living, player))
+                    .replace("{mob}", EnchantedMobs.methodUtil.getEntityName(living))
+                    .replace("{health}", String.format(Locale.US, "%.1f", living.getHealth()))
+                    .replace("{max-health}", String.format(Locale.US, "%.1f", maxHealth))
+                    .replace("{powers_full}", powersFull);
+
+            EnchantedMobs.methodUtil.sendBossBar(player, parsed, progress, color, style, bossBarKey);
         }
+        hideStaleMobBossBars(player, visibleKeys);
     }
 
     private String getBossBarEntityName(LivingEntity entity, Player player) {
@@ -227,7 +239,10 @@ public class PowerManager {
             if (!power.isEnabled()) {
                 continue;
             }
-            ConfigurationSection matchEntity = power.getSection("match-entity");
+            ConfigurationSection matchEntity = power.getSection("apply-rules.match-entity");
+            if (matchEntity == null) {
+                matchEntity = power.getSection("match-entity");
+            }
             if (!MatchEntityManager.matchEntityManager.getMatch(matchEntity, entity)) {
                 continue;
             }
@@ -242,7 +257,7 @@ public class PowerManager {
             boolean groupUnique = power.getBoolean("apply-rules.group-unique", false);
 
             uniqueGroupMap.put(group, uniqueGroupMap.getOrDefault(group, false) || groupUnique);
-            CandidatePower candidate = new CandidatePower(entry.getKey(), group, cost, weight);
+            CandidatePower candidate = new CandidatePower(entry.getKey(), group, cost, weight, getApplyRuleConflicts(power));
             if (power.getBoolean("apply-rules.always-select", false) || power.getBoolean("apply-rules.always-pick", false)) {
                 alwaysSelectedCandidates.add(candidate);
                 continue;
@@ -261,6 +276,7 @@ public class PowerManager {
 
         Map<String, List<CandidatePower>> currentPools = new HashMap<>();
         Set<String> consumedUniqueGroups = new HashSet<>();
+        List<CandidatePower> selectedCandidates = new ArrayList<>();
         for (Map.Entry<String, List<CandidatePower>> entry : groupedCandidates.entrySet()) {
             currentPools.put(entry.getKey(), new ArrayList<>(entry.getValue()));
         }
@@ -268,10 +284,15 @@ public class PowerManager {
         alwaysSelectedCandidates.stream()
                 .sorted(Comparator.comparing(CandidatePower::powerId))
                 .forEach(candidate -> {
+                    if (conflictsWithSelected(candidate, selectedCandidates)) {
+                        return;
+                    }
                     selectedPowerIds.add(candidate.powerId());
+                    selectedCandidates.add(candidate);
                     if (uniqueGroupMap.getOrDefault(candidate.group(), false)) {
                         consumedUniqueGroups.add(candidate.group());
                     }
+                    removeConflictingCandidates(currentPools, candidate);
                 });
 
         while (remainLevel > 0 && !groupedCandidates.isEmpty()) {
@@ -285,11 +306,13 @@ public class PowerManager {
                 }
 
                 List<CandidatePower> pool = currentPools.computeIfAbsent(group, k -> new ArrayList<>());
+                pool.removeIf(candidate -> conflictsWithSelected(candidate, selectedCandidates));
                 if (pool.isEmpty()) {
                     if (uniqueGroupMap.getOrDefault(group, false)) {
                         continue;
                     }
                     pool.addAll(groupedCandidates.getOrDefault(group, Collections.emptyList()));
+                    pool.removeIf(candidate -> conflictsWithSelected(candidate, selectedCandidates));
                 }
 
                 CandidatePower chosen = weightedPick(pool, remainLevel);
@@ -298,9 +321,11 @@ public class PowerManager {
                 }
 
                 selectedPowerIds.add(chosen.powerId());
+                selectedCandidates.add(chosen);
                 remainLevel -= chosen.cost();
                 pickedThisRound = true;
                 pool.remove(chosen);
+                removeConflictingCandidates(currentPools, chosen);
 
                 if (uniqueGroupMap.getOrDefault(group, false)) {
                     consumedUniqueGroups.add(group);
@@ -346,6 +371,52 @@ public class PowerManager {
         }
 
         return candidates.get(candidates.size() - 1);
+    }
+
+    private Set<String> getApplyRuleConflicts(ObjectPower power) {
+        Set<String> conflicts = new HashSet<>();
+        addConflictIds(conflicts, power.getSection().getStringList("apply-rules.conflicts"));
+        addConflictIds(conflicts, power.getSection().getStringList("apply-rules.conflict-with"));
+        return conflicts;
+    }
+
+    private void addConflictIds(Set<String> conflicts, List<String> values) {
+        if (values == null) {
+            return;
+        }
+        for (String value : values) {
+            if (value == null || value.isBlank()) {
+                continue;
+            }
+            conflicts.add(normalizePowerId(value));
+        }
+    }
+
+    private boolean conflictsWithSelected(CandidatePower candidate, List<CandidatePower> selectedCandidates) {
+        for (CandidatePower selected : selectedCandidates) {
+            if (candidatesConflict(candidate, selected)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean candidatesConflict(CandidatePower first, CandidatePower second) {
+        String firstId = normalizePowerId(first.powerId());
+        String secondId = normalizePowerId(second.powerId());
+        return firstId.equals(secondId)
+                || first.conflicts().contains(secondId)
+                || second.conflicts().contains(firstId);
+    }
+
+    private void removeConflictingCandidates(Map<String, List<CandidatePower>> pools, CandidatePower selected) {
+        for (List<CandidatePower> pool : pools.values()) {
+            pool.removeIf(candidate -> candidatesConflict(candidate, selected));
+        }
+    }
+
+    private String normalizePowerId(String id) {
+        return id == null ? "" : id.toLowerCase(Locale.ROOT).replace('-', '_');
     }
 
     public int parseLevelValue(String value, int defaultValue) {
@@ -399,12 +470,21 @@ public class PowerManager {
             powersText += separator + etcFormat.replace("{count}", String.valueOf(more));
         }
 
+        EnchantedMobs.methodUtil.setEntityName(living, null);
         String displayName = format
                 .replace("{powers}", powersText)
-                .replace("{mob}", EnchantedMobs.methodUtil.getEntityName(living));
+                .replace("{mob}", getDisplayBaseName(living));
 
         EnchantedMobs.methodUtil.setEntityName(living, displayName);
         living.setCustomNameVisible(true);
+    }
+
+    private String getDisplayBaseName(LivingEntity entity) {
+        String baseName = EntityScannerManager.entityScannerManager.getBaseName(entity);
+        if (baseName != null && !baseName.isEmpty()) {
+            return baseName;
+        }
+        return EnchantedMobs.methodUtil.getEntityName(entity);
     }
 
     private List<String> getPowerPlaceholders(List<String> powerIDs, int level, Player player) {
@@ -457,20 +537,18 @@ public class PowerManager {
             event.setProjectile(handler.projectile);
         }
         if (ConfigManager.configManager.getBoolean("optimize.enabled-projectile-tick")) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!handler.projectile.isValid() || handler.projectile.isOnGround()) {
-                        cancel();
-                        return;
-                    }
-                    ShootBowHandler tickHandler = new ShootBowHandler(handler, handler.projectile.getLocation());
-                    forEachActivePower(shooter, handler.projectile, "on-projectile-tick", (power, level) -> power.onProjectileTick(level, tickHandler), (b) -> cancel());
-                    if (tickHandler.replacedNewProjectile && tickHandler.projectile != null) {
-                        handler.projectile = tickHandler.projectile;
-                    }
+            final SchedulerUtil[] task = new SchedulerUtil[1];
+            task[0] = SchedulerUtil.runTaskTimer(handler.projectile, () -> {
+                if (!handler.projectile.isValid() || handler.projectile.isOnGround()) {
+                    task[0].cancel();
+                    return;
                 }
-            }.runTaskTimer(EnchantedMobs.instance, 1L, 1L);
+                ShootBowHandler tickHandler = new ShootBowHandler(handler, handler.projectile.getLocation());
+                forEachActivePower(shooter, handler.projectile, "on-projectile-tick", (power, level) -> power.onProjectileTick(level, tickHandler), (b) -> task[0].cancel());
+                if (tickHandler.replacedNewProjectile && tickHandler.projectile != null) {
+                    handler.projectile = tickHandler.projectile;
+                }
+            }, 1L, 1L);
         }
     }
 
@@ -680,7 +758,7 @@ public class PowerManager {
         }
     }
 
-    private record CandidatePower(String powerId, String group, int cost, int weight) {
+    private record CandidatePower(String powerId, String group, int cost, int weight, Set<String> conflicts) {
     }
 
     private static class TargetCombatState {

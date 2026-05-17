@@ -3,6 +3,7 @@ package cn.superiormc.enchantedmobs.spigot.listener;
 import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.PlayerPowerManager;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,7 +44,7 @@ public class SpigotPlayerPowerListener extends PlayerPowerManager implements Lis
         if (!(event.getClickedInventory() instanceof PlayerInventory)) {
             return;
         }
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> PlayerPowerManager.playerPowerManager.updateChangedSlots(player, CommonUtil.arrayToSet(event.getRawSlot(), event.getSlot())), 1L);
+        SchedulerUtil.runTaskLater(player, () -> PlayerPowerManager.playerPowerManager.updateChangedSlots(player, CommonUtil.arrayToSet(event.getRawSlot(), event.getSlot())), 1L);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -56,7 +57,7 @@ public class SpigotPlayerPowerListener extends PlayerPowerManager implements Lis
         }
         Set<Integer> tempVal1 = event.getInventorySlots();
         tempVal1.addAll(event.getRawSlots());
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> PlayerPowerManager.playerPowerManager.updateChangedSlots(player, tempVal1), 1L);
+        SchedulerUtil.runTaskLater(player, () -> PlayerPowerManager.playerPowerManager.updateChangedSlots(player, tempVal1), 1L);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -67,6 +68,6 @@ public class SpigotPlayerPowerListener extends PlayerPowerManager implements Lis
         if (!(event.getInventory() instanceof PlayerInventory)) {
             return;
         }
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> PlayerPowerManager.playerPowerManager.updateChangedSlots(player, CommonUtil.arrayToSet(event.getRawSlot(), event.getSlot())), 1L);
+        SchedulerUtil.runTaskLater(player, () -> PlayerPowerManager.playerPowerManager.updateChangedSlots(player, CommonUtil.arrayToSet(event.getRawSlot(), event.getSlot())), 1L);
     }
 }

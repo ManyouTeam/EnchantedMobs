@@ -20,6 +20,8 @@ public abstract class EntityScannerManager {
 
     private final NamespacedKey ENTITY_LEVEL = new NamespacedKey(EnchantedMobs.instance, "level");
 
+    private final NamespacedKey ENTITY_BASE_NAME = new NamespacedKey(EnchantedMobs.instance, "base_name");
+
     private final Map<LivingEntity, List<String>> entitiesPowerCache = new ConcurrentHashMap<>();
 
     private final Map<LivingEntity, Integer> entitiesLevelCache = new ConcurrentHashMap<>();
@@ -60,6 +62,9 @@ public abstract class EntityScannerManager {
     }
 
     public Collection<LivingEntity> getLivingEntities() {
+        if (EnchantedMobs.isFolia) {
+            return new ArrayList<>(entitiesPowerCache.keySet());
+        }
         if (!ConfigManager.configManager.getBoolean("optimize.enabled-entity-scanner-cache") || entitiesPowerCache.isEmpty()) {
             initEntities();
         }
@@ -153,8 +158,48 @@ public abstract class EntityScannerManager {
             if (level > 0) {
                 entitiesLevelCache.put(living, level);
             }
+            String name = getBaseName(living);
+            if (name == null) {
+                setBaseName(living, EnchantedMobs.methodUtil.getEntityCustomName(living));
+            }
             PowerManager.powerManager.handleSpawn(entity);
         }
+    }
+
+    public void transferEntityPower(Entity from, Entity to) {
+        if (!(from instanceof LivingEntity oldEntity) || !(to instanceof LivingEntity newEntity)) {
+            return;
+        }
+
+        List<String> powers = getEntityPowerCache(oldEntity);
+        int level = getEntityLevelCache(oldEntity);
+
+        removeEntityCache(oldEntity);
+        if (powers == null || powers.isEmpty() || level < 0) {
+            return;
+        }
+
+        setBaseName(newEntity, getBaseName(oldEntity));
+        setEntityPowers(to, powers, level);
+        PowerManager.powerManager.updateEntityPowerDisplay(to);
+    }
+
+    public String getBaseName(LivingEntity entity) {
+        String result = entity.getPersistentDataContainer().get(ENTITY_BASE_NAME, PersistentDataType.STRING);
+        if ("null".equals(result)) {
+            return null;
+        }
+        return result;
+    }
+
+    public void setBaseName(LivingEntity entity, String baseName) {
+        if (baseName == null || baseName.isEmpty()) {
+            baseName = "null";
+        }
+        if (entity.getPersistentDataContainer().has(ENTITY_BASE_NAME, PersistentDataType.STRING)) {
+            return;
+        }
+        entity.getPersistentDataContainer().set(ENTITY_BASE_NAME, PersistentDataType.STRING, baseName);
     }
 
     public boolean containsEntityCache(Entity entity) {

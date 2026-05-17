@@ -3,8 +3,8 @@ package cn.superiormc.enchantedmobs.managers;
 import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.methods.BuildItem;
 import cn.superiormc.enchantedmobs.methods.DebuildItem;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import cn.superiormc.enchantedmobs.utils.TextUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -71,7 +71,7 @@ public class ItemManager {
         YamlConfiguration briefcase = new YamlConfiguration();
         briefcase.set("item", EnchantedMobs.methodUtil.makeItemToObject(item));
         String yaml = briefcase.saveToString();
-        Bukkit.getScheduler().runTaskAsynchronously(EnchantedMobs.instance, () -> {
+        SchedulerUtil.runTaskAsynchronously(() -> {
             Path path = new File(dir.getPath(), key + ".yml").toPath();
             try {
                 Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));
@@ -90,7 +90,7 @@ public class ItemManager {
         YamlConfiguration briefcase = new YamlConfiguration();
         DebuildItem.debuildItem(player.getInventory().getItemInMainHand(), briefcase);
         String yaml = briefcase.saveToString();
-        Bukkit.getScheduler().runTaskAsynchronously(EnchantedMobs.instance, () -> {
+        SchedulerUtil.runTaskAsynchronously(() -> {
             Path path = new File(dir.getPath(), key + ".yml").toPath();
             try {
                 Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));

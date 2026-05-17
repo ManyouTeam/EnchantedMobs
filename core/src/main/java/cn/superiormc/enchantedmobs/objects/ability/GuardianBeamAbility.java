@@ -1,9 +1,8 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import cn.superiormc.enchantedmobs.utils.VirtualGuardianBeam;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -35,7 +34,7 @@ public class GuardianBeamAbility extends AbstractAbility {
         int chargeTicks = Math.max(1, getInt("charge-ticks", 30, context.level()));
         double damage = Math.max(0.0, getDouble("damage", 6.0, context.level()));
         VirtualGuardianBeam.start(caster, victim, chargeTicks, range,
-                () -> Bukkit.getScheduler().runTask(EnchantedMobs.instance, () -> {
+                () -> SchedulerUtil.runSync(caster, () -> {
                     if (!caster.isValid() || !victim.isValid() || victim.isDead()) {
                         return;
                     }

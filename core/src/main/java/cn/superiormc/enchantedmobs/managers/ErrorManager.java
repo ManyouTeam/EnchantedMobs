@@ -1,9 +1,7 @@
 package cn.superiormc.enchantedmobs.managers;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import cn.superiormc.enchantedmobs.utils.TextUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class ErrorManager {
 
@@ -23,12 +21,7 @@ public class ErrorManager {
             lastErrorMessage = message;
             getError = true;
             try {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        getError = false;
-                    }
-                }.runTaskLater(EnchantedMobs.instance, 100);
+                SchedulerUtil.runTaskLater(() -> getError = false, 100);
             } catch (Exception ignored) {
             }
         }

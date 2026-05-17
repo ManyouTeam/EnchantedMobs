@@ -1,6 +1,5 @@
 package cn.superiormc.enchantedmobs.paper;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.ConfigManager;
 import cn.superiormc.enchantedmobs.managers.ErrorManager;
 import cn.superiormc.enchantedmobs.paper.listener.PaperEntityScannerListener;
@@ -10,6 +9,7 @@ import cn.superiormc.enchantedmobs.paper.methods.BuildItemPaper;
 import cn.superiormc.enchantedmobs.paper.methods.DebuildItemPaper;
 import cn.superiormc.enchantedmobs.paper.utils.PaperTextUtil;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import cn.superiormc.enchantedmobs.utils.SpecialMethodUtil;
 import cn.superiormc.enchantedmobs.utils.TextUtil;
 import com.destroystokyo.paper.profile.PlayerProfile;
@@ -197,7 +197,7 @@ public class PaperMethodUtil implements SpecialMethodUtil {
 
         BossBar finalBar = bar;
         long finalGeneration = generation;
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> {
+        SchedulerUtil.runTaskLater(player, () -> {
             Long currentGeneration = generations.get(barKey);
             if (currentGeneration != null && currentGeneration != finalGeneration) {
                 return;
@@ -280,6 +280,14 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     @Override
     public void setEntityName(LivingEntity entity, String name) {
         entity.customName(PaperTextUtil.modernParse(name));
+    }
+
+    @Override
+    public String getEntityCustomName(LivingEntity entity) {
+        if (entity.customName() != null) {
+            return PaperTextUtil.changeToString(entity.customName());
+        }
+        return null;
     }
 
     @Override

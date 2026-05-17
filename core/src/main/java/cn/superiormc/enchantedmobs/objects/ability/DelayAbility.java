@@ -1,9 +1,9 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.AbilityManager;
-import org.bukkit.Bukkit;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 
 public class DelayAbility extends AbstractAbility {
 
@@ -17,8 +17,14 @@ public class DelayAbility extends AbstractAbility {
         if (delay <= 0) {
             delay = 1;
         }
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () ->
-                AbilityManager.abilityManager.execute(section.getConfigurationSection("abilities"), context), delay);
+        Entity source = context.handler().sourceEntity;
+        if (source != null) {
+            SchedulerUtil.runTaskLater(source, () ->
+                    AbilityManager.abilityManager.execute(section.getConfigurationSection("abilities"), context), delay);
+        } else {
+            SchedulerUtil.runTaskLater(() ->
+                    AbilityManager.abilityManager.execute(section.getConfigurationSection("abilities"), context), delay);
+        }
         return false;
     }
 

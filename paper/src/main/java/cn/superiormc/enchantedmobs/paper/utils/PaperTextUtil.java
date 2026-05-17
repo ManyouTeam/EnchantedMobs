@@ -102,6 +102,9 @@ public class PaperTextUtil {
 
 
     public static Component modernParse(String text) {
+        if (text == null) {
+            return null;
+        }
         try {
             if (containsLegacyCodes(text)) {
                 text = convertToMiniMessage(text);

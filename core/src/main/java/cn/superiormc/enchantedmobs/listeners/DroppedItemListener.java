@@ -4,6 +4,7 @@ import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.LanguageManager;
 import cn.superiormc.enchantedmobs.managers.PowerManager;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -65,7 +66,7 @@ public class DroppedItemListener implements Listener {
     }
 
     private void addItem(Item item) {
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> {
+        SchedulerUtil.runTaskLater(item, () -> {
             removeExtra();
             UUID uuid = item.getOwner();
             if (uuid != null && PowerManager.powerManager.isDisarmReturnItem(item)) {

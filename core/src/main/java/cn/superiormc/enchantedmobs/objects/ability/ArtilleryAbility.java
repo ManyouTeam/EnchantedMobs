@@ -1,13 +1,12 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class ArtilleryAbility extends AbstractAbility {
@@ -32,13 +31,14 @@ public class ArtilleryAbility extends AbstractAbility {
         int chargeTicks = Math.max(1, getInt("charge-ticks", 30, context.level()));
         double damage = Math.max(0.0, getDouble("damage", 6.0, context.level()));
 
-        new BukkitRunnable() {
+        final SchedulerUtil[] task = new SchedulerUtil[1];
+        task[0] = SchedulerUtil.runTaskTimer(caster, new Runnable() {
             int tick = 0;
 
             @Override
             public void run() {
                 if (!caster.isValid() || !victim.isValid() || victim.isDead() || caster.getWorld() != victim.getWorld()) {
-                    cancel();
+                    task[0].cancel();
                     return;
                 }
 
@@ -49,9 +49,9 @@ public class ArtilleryAbility extends AbstractAbility {
 
                 victim.damage(damage, caster);
                 victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GUARDIAN_ATTACK, 1f, 1f);
-                cancel();
+                task[0].cancel();
             }
-        }.runTaskTimer(EnchantedMobs.instance, 0L, 1L);
+        }, 1L, 1L);
         return false;
     }
 

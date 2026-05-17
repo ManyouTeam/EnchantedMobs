@@ -1,7 +1,6 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
-import org.bukkit.Bukkit;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -34,7 +33,7 @@ public class SonicBoomAbility extends AbstractAbility {
         world.playSound(source.getLocation(), Sound.ENTITY_WARDEN_SONIC_CHARGE, chargeVolume, chargePitch);
 
         int chargeTicks = Math.max(1, getInt("charge-ticks", 34, context.level()));
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> boom(source, target, context), chargeTicks);
+        SchedulerUtil.runTaskLater(source, () -> boom(source, target, context), chargeTicks);
         return false;
     }
 

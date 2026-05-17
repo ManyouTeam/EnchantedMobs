@@ -2,20 +2,15 @@ package cn.superiormc.enchantedmobs.listeners;
 
 import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.*;
-import cn.superiormc.enchantedmobs.utils.CommonUtil;
+import cn.superiormc.enchantedmobs.utils.AbilityDamageUtil;
 import cn.superiormc.enchantedmobs.utils.DebugUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.UUID;
 
 public class PowerListener implements Listener {
 
@@ -123,6 +118,7 @@ public class PowerListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMeleeAttack(EntityDamageByEntityEvent event) {
+        AbilityDamageUtil.applyMarkedDamage(event);
         PowerManager.powerManager.handleMeleeAttack(event);
     }
 
@@ -157,5 +153,10 @@ public class PowerListener implements Listener {
         if (event.getEntity() instanceof Monster) {
             PowerManager.powerManager.handleCreeperExplode(event);
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onEntityTransform(EntityTransformEvent event) {
+        EntityScannerManager.entityScannerManager.transferEntityPower(event.getEntity(), event.getTransformedEntity());
     }
 }

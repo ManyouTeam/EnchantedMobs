@@ -6,6 +6,7 @@ import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class PaperEntityScannerListener extends EntityScannerManager implements Listener {
@@ -15,12 +16,12 @@ public class PaperEntityScannerListener extends EntityScannerManager implements 
         Bukkit.getPluginManager().registerEvents(this, EnchantedMobs.instance);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAdd(EntityAddToWorldEvent event) {
         updateEntityCache(event.getEntity());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onRemove(EntityRemoveFromWorldEvent event) {
         removeEntityCache(event.getEntity());
     }

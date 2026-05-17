@@ -92,6 +92,8 @@ public class AbilityManager {
         registerAbilityParser("artillery", ArtilleryAbility::new);
         registerAbilityParser("guardian_beam", GuardianBeamAbility::new);
         registerAbilityParser("sonic_boom", SonicBoomAbility::new);
+        registerAbilityParser("evoker_fangs", EvokerFangsAbility::new);
+        registerAbilityParser("shulker_bullet", LaunchProjectileAbility::new);
         registerAbilityParser("vanilla_animation", VanillaAnimationAbility::new);
         registerAbilityParser("arrow_rain", ArrowRainAbility::new);
         registerAbilityParser("enhance_equipment", EnhanceEquipmentAbility::new);

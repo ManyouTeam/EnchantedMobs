@@ -1,6 +1,5 @@
 package cn.superiormc.enchantedmobs.utils;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.PacketEventsAPI;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
@@ -18,7 +17,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,8 +46,8 @@ public class VirtualGuardianBeam {
             return false;
         }
 
-        new BeamTask(bridge, caster, victim, Math.max(1, chargeTicks), range, onComplete)
-                .runTaskTimer(EnchantedMobs.instance, 0L, 1L);
+        BeamTask task = new BeamTask(bridge, caster, victim, Math.max(1, chargeTicks), range, onComplete);
+        task.start();
         return true;
     }
 
@@ -71,7 +69,7 @@ public class VirtualGuardianBeam {
         }
     }
 
-    private static final class BeamTask extends BukkitRunnable {
+    private static final class BeamTask implements Runnable {
 
         private final PacketBridge bridge;
         private final LivingEntity caster;
@@ -83,6 +81,7 @@ public class VirtualGuardianBeam {
         private final UUID uuid;
         private final Set<Player> viewers = new HashSet<>();
 
+        private SchedulerUtil task;
         private Location lastLocation;
         private int ticks;
 
@@ -100,6 +99,10 @@ public class VirtualGuardianBeam {
             this.onComplete = onComplete;
             this.entityId = ThreadLocalRandom.current().nextInt(2000000000, Integer.MAX_VALUE);
             this.uuid = UUID.randomUUID();
+        }
+
+        private void start() {
+            task = SchedulerUtil.runTaskTimer(caster, this, 1L, 1L);
         }
 
         @Override
@@ -190,7 +193,9 @@ public class VirtualGuardianBeam {
                 bridge.destroyEntity(viewer, entityId);
             }
             viewers.clear();
-            cancel();
+            if (task != null) {
+                task.cancel();
+            }
         }
     }
 

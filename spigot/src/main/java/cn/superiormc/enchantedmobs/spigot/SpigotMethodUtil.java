@@ -1,11 +1,11 @@
 package cn.superiormc.enchantedmobs.spigot;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.ConfigManager;
 import cn.superiormc.enchantedmobs.spigot.listener.SpigotEntityScannerListener;
 import cn.superiormc.enchantedmobs.spigot.listener.SpigotPlayerPowerListener;
 import cn.superiormc.enchantedmobs.spigot.listener.SpigotTempBlockListener;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import cn.superiormc.enchantedmobs.utils.SpecialMethodUtil;
 import cn.superiormc.enchantedmobs.utils.TextUtil;
 import org.bukkit.Bukkit;
@@ -228,7 +228,7 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
 
         BossBar finalBar = bar;
         long finalGeneration = generation;
-        Bukkit.getScheduler().runTaskLater(EnchantedMobs.instance, () -> {
+        SchedulerUtil.runTaskLater(player, () -> {
             Long currentGeneration = generations.get(barKey);
             if (currentGeneration != null && currentGeneration != finalGeneration) {
                 return;
@@ -305,6 +305,14 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
             return entity.getCustomName();
         }
         return entity.getName();
+    }
+
+    @Override
+    public String getEntityCustomName(LivingEntity entity) {
+        if (entity.getCustomName() != null) {
+            return entity.getCustomName();
+        }
+        return null;
     }
 
     @Override

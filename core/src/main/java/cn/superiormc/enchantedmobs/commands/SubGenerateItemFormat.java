@@ -1,9 +1,9 @@
 package cn.superiormc.enchantedmobs.commands;
 
-import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.LanguageManager;
 import cn.superiormc.enchantedmobs.methods.DebuildItem;
-import org.bukkit.Bukkit;
+import cn.superiormc.enchantedmobs.EnchantedMobs;
+import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -27,7 +27,7 @@ public class SubGenerateItemFormat extends AbstractCommand {
         YamlConfiguration itemConfig = new YamlConfiguration();
         DebuildItem.debuildItem(player.getInventory().getItemInMainHand(), itemConfig);
         String yaml = itemConfig.saveToString();
-        Bukkit.getScheduler().runTaskAsynchronously(EnchantedMobs.instance, () -> {
+        SchedulerUtil.runTaskAsynchronously(() -> {
             Path path = new File(EnchantedMobs.instance.getDataFolder(), "generated-item-format.yml").toPath();
             try {
                 Files.write(path, yaml.getBytes(StandardCharsets.UTF_8));
