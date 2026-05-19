@@ -80,7 +80,7 @@ public class SonicBoomAbility extends AbstractAbility {
 
         double damage = Math.max(0.0D, getDouble("damage", 10.0D, context.level()));
         if (damage > 0.0D) {
-            target.damage(damage, source);
+            target.damage(damage, getSourceEntity(context));
         }
 
         double horizontal = getDouble("knockback-horizontal", 2.5D, context.level());

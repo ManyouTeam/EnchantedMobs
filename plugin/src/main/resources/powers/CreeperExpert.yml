@@ -4,7 +4,7 @@ placeholder: '{lang:power.creeper_expert}'
 apply-rules:
   group: explosion
   group-unique: false
-  weight: 8
+  weight: 180
   level-weight: 20
   match-entity:
     entity-types:

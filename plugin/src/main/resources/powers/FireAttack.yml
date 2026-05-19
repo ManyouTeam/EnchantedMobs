@@ -22,3 +22,4 @@ on-melee-attack:
     1:
       type: fire
       fire-ticks: 100
+      accumulate: true

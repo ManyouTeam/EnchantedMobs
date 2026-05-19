@@ -14,6 +14,7 @@ public class LightningAbility extends AbstractAbility {
     @Override
     public boolean execute(AbilityContext context) {
         Entity entity = getTargetEntity(context);
+        Entity damageSource = getSourceEntity(context);
         int level = context.level();
         int count = Math.max(1, getInt("count", 2, level));
         double radius = getDouble("radius", 3.0, level);
@@ -27,7 +28,7 @@ public class LightningAbility extends AbstractAbility {
             entity.getWorld().strikeLightningEffect(strike);
             for (Entity nearby : entity.getNearbyEntities(radius, 3, radius)) {
                 if (nearby instanceof LivingEntity livingEntity) {
-                    livingEntity.damage(getDouble("damage", 4.0, level), entity);
+                    livingEntity.damage(getDouble("damage", 4.0, level), damageSource);
                 }
             }
         }

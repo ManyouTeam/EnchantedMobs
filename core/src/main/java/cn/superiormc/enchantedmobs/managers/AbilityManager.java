@@ -81,6 +81,11 @@ public class AbilityManager {
         registerAbilityParser("sound", SoundAbility::new);
         registerAbilityParser("set_attribute", SetAttributeAbility::new);
         registerAbilityParser("set_health", SetHealthAbility::new);
+        registerAbilityParser("set_air", SetAirAbility::new);
+        registerAbilityParser("consume_food", ConsumeFoodAbility::new);
+        registerAbilityParser("damage_item", DamageItemAbility::new);
+        registerAbilityParser("damage_entity", DamageEntityAbility::new);
+        registerAbilityParser("set_invulnerable", SetInvulnerableAbility::new);
         registerAbilityParser("pull_target", PullTargetAbility::new);
         registerAbilityParser("potion_cloud", PotionCloudAbility::new);
         registerAbilityParser("potion_effect", PotionEffectAbility::new);
@@ -104,7 +109,10 @@ public class AbilityManager {
         registerAbilityParser("launch_projectile", LaunchProjectileAbility::new);
         registerAbilityParser("send_message", SendMessageAbility::new);
         registerAbilityParser("execute_command", ExecuteCommandAbility::new);
+        registerAbilityParser("conditional", ConditionalAbility::new);
         registerAbilityParser("limit", LimitAbility::new);
+        registerAbilityParser("repeat", RepeatAbility::new);
+        registerAbilityParser("nearby_entities", NearbyEntitiesAbility::new);
         registerAbilityParser("mythic_skill", MythicSkillAbility::new);
         registerAbilityParser("summon", SummonAbility::new);
         registerAbilityParser("creeper_stats", CreeperStatsAbility::new);

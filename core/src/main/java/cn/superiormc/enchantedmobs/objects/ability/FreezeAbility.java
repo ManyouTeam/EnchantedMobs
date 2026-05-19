@@ -17,7 +17,11 @@ public class FreezeAbility extends AbstractAbility {
             return false;
         }
         int freezeTicks = Math.max(0, getInt("freeze-ticks", 60, context.level()));
-        living.setFreezeTicks(freezeTicks);
+        if (getBoolean("accumulate", false)) {
+            living.setFreezeTicks(freezeTicks);
+        } else {
+            living.setFreezeTicks(freezeTicks + living.getFreezeTicks());
+        }
         return false;
     }
 

@@ -4,7 +4,7 @@ placeholder: '{lang:power.damage_multiplier}'
 apply-rules:
   group: misc
   weight: 36
-  level-weight: 14
+  level-weight: 1
   match-entity:
     not:
       entity-types:

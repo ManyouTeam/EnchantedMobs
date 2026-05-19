@@ -33,6 +33,7 @@ public class MatchEntityManager {
         registerNewRule(new Not());
         registerNewRule(new Equip());
         registerNewRule(new Ranged());
+        registerNewRule(new Monster());
         if (CommonUtil.checkPluginLoad("MythicMobs")) {
             registerNewRule(new MythicMobs());
         }

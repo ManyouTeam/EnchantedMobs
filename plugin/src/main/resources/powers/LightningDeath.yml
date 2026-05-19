@@ -19,4 +19,4 @@ on-death:
       type: lightning
       count: 2
       radius: 3.0
-      damage: 4.0
+      damage: 10.0

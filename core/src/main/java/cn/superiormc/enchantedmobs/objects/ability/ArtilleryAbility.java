@@ -30,6 +30,7 @@ public class ArtilleryAbility extends AbstractAbility {
 
         int chargeTicks = Math.max(1, getInt("charge-ticks", 30, context.level()));
         double damage = Math.max(0.0, getDouble("damage", 6.0, context.level()));
+        Entity damageSource = getSourceEntity(context);
 
         final SchedulerUtil[] task = new SchedulerUtil[1];
         task[0] = SchedulerUtil.runTaskTimer(caster, new Runnable() {
@@ -47,7 +48,7 @@ public class ArtilleryAbility extends AbstractAbility {
                     return;
                 }
 
-                victim.damage(damage, caster);
+                victim.damage(damage, damageSource);
                 victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GUARDIAN_ATTACK, 1f, 1f);
                 task[0].cancel();
             }

@@ -15,5 +15,11 @@ limit:
 
 on-death:
   modifier:
-    modifier: '{original} * (1.4 + {level} / 90)'
+    revive-health: '{original} * (1.4 + {level} / 90)'
+  abilities:
+    1:
+      type: sound
+      sound: ENTITY_PLAYER_LEVELUP
+      volume: 1
+      pitch: 1
 

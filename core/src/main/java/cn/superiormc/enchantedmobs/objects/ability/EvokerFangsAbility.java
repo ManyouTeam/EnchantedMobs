@@ -37,12 +37,13 @@ public class EvokerFangsAbility extends AbstractAbility {
         double maxY = Math.max(to.getY(), from.getY()) + 1.0D;
         float angleToTarget = (float) Math.atan2(to.getZ() - from.getZ(), to.getX() - from.getX());
         double damage = getDouble("damage", 6.0D, context.level());
+        LivingEntity damageSource = getSourceEntity(context) instanceof LivingEntity livingSource ? livingSource : owner;
 
         double closeRange = getDouble("close-range", 3.0D, context.level());
         if (from.distanceSquared(to) < closeRange * closeRange) {
-            spawnCloseFangs(world, from, minY, maxY, angleToTarget, owner, damage);
+            spawnCloseFangs(world, from, minY, maxY, angleToTarget, damageSource, damage);
         } else {
-            spawnLineFangs(world, from, minY, maxY, angleToTarget, owner, damage);
+            spawnLineFangs(world, from, minY, maxY, angleToTarget, damageSource, damage);
         }
         return false;
     }

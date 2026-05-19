@@ -81,7 +81,10 @@ Built-in abilities include:
 - `homing_projectile`
 - `arrow_rain`
 - `execute_command`
+- `conditional`
 - `mythic_skill`
+- `repeat`
+- `nearby_entities`
 
 This system allows server owners to design **complex boss-like mob mechanics purely through configuration**.
 

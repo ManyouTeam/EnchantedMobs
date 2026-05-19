@@ -18,7 +18,7 @@ public class ArrowRainAbility extends AbstractAbility {
 
     @Override
     public boolean execute(AbilityContext context) {
-        Entity source = context.handler().sourceEntity;
+        Entity source = getSourceEntity(context);
         Entity target = getTargetEntity(context);
         if (target == null) {
             return false;

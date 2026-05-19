@@ -108,6 +108,13 @@ public class PowerListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInvulnerableDamage(EntityDamageEvent event) {
+        if (AbilityDamageUtil.isInvulnerable(event.getEntity())) {
+            event.setCancelled(true);
+        }
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onRegainHealth(EntityRegainHealthEvent event) {
         Entity entity = event.getEntity();

@@ -33,6 +33,7 @@ public class GuardianBeamAbility extends AbstractAbility {
 
         int chargeTicks = Math.max(1, getInt("charge-ticks", 30, context.level()));
         double damage = Math.max(0.0, getDouble("damage", 6.0, context.level()));
+        Entity damageSource = getSourceEntity(context);
         VirtualGuardianBeam.start(caster, victim, chargeTicks, range,
                 () -> SchedulerUtil.runSync(caster, () -> {
                     if (!caster.isValid() || !victim.isValid() || victim.isDead()) {
@@ -45,7 +46,7 @@ public class GuardianBeamAbility extends AbstractAbility {
                         return;
                     }
 
-                    victim.damage(damage, caster);
+                    victim.damage(damage, damageSource);
                     victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GUARDIAN_ATTACK, 1f, 1f);
                 }));
         return false;

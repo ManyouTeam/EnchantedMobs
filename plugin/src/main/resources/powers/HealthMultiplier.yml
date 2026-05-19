@@ -5,7 +5,7 @@ apply-rules:
   group: misc
   always-select: true
   weight: 36
-  level-weight: 20
+  level-weight: 1
   match-entity:
     any: true
 

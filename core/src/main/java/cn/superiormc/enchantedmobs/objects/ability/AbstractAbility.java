@@ -35,6 +35,14 @@ public abstract class AbstractAbility extends AdvancedSection {
         };
     }
 
+    protected Entity getSourceEntity(AbilityContext context) {
+        return switch (section.getString("source", "SOURCE").toUpperCase()) {
+            case "TARGET" -> context.handler().targetEntity;
+            case "SKILL" -> context.handler().skillEntity;
+            default -> context.handler().sourceEntity;
+        };
+    }
+
     public boolean shouldExecute(AbilityContext context) {
         Entity source = context.handler().sourceEntity;
         if (source == null) {

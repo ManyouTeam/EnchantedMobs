@@ -1,5 +1,6 @@
 enabled: true
 placeholder: '{lang:power.berserk}'
+
 apply-rules:
   group: defense
   weight: 3
@@ -10,9 +11,11 @@ apply-rules:
         - CREEPER
         - WITCH
   level-weight: 25~65
+
 on-melee-attack:
   modifier:
     damage: '{original} * (1.25 + {level} / 160)'
+
 on-damage:
   conditions:
     damage-cause:

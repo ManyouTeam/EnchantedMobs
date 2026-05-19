@@ -39,8 +39,23 @@ public class PotionEffectAbility extends AbstractAbility {
         boolean particles = getBoolean("particles", true);
         boolean icon = getBoolean("icon", true);
         int appliedDuration = durationTicks == PotionEffect.INFINITE_DURATION ? PotionEffect.INFINITE_DURATION : Math.max(1, durationTicks);
+        if (getBoolean("accumulate", false)) {
+            PotionEffect existing = living.getPotionEffect(type);
+            if (existing != null) {
+                appliedDuration = accumulateDuration(existing.getDuration(), appliedDuration);
+                amplifier = Math.max(amplifier, existing.getAmplifier());
+            }
+        }
         living.addPotionEffect(new PotionEffect(type, appliedDuration, amplifier, ambient, particles, icon));
         return false;
+    }
+
+    private int accumulateDuration(int existingDuration, int newDuration) {
+        if (existingDuration == PotionEffect.INFINITE_DURATION || newDuration == PotionEffect.INFINITE_DURATION) {
+            return PotionEffect.INFINITE_DURATION;
+        }
+        long total = (long) existingDuration + newDuration;
+        return total >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) total;
     }
 
     @Override

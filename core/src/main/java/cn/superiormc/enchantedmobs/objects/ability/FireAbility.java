@@ -17,7 +17,11 @@ public class FireAbility extends AbstractAbility {
             return false;
         }
         int fireTicks = Math.max(0, getInt("fire-ticks", 60, context.level()));
-        living.setFireTicks(fireTicks);
+        if (getBoolean("accumulate", false)) {
+            living.setFireTicks(fireTicks);
+        } else {
+            living.setFireTicks(fireTicks + living.getFireTicks());
+        }
         return false;
     }
 
