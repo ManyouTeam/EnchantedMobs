@@ -11,7 +11,7 @@ public class Monster extends AbstractMatchEntityRule {
 
     @Override
     public boolean getMatch(ConfigurationSection section, LivingEntity entity) {
-        boolean result = entity instanceof Monster;
+        boolean result = entity instanceof org.bukkit.entity.Monster;
         if (section.getBoolean("monster")) {
             return result;
         }

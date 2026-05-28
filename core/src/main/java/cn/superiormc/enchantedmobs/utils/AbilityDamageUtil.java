@@ -35,7 +35,6 @@ public class AbilityDamageUtil {
         if (entity == null) {
             return;
         }
-        entity.setInvulnerable(value);
         PersistentDataContainer pdc = entity.getPersistentDataContainer();
         if (!value) {
             pdc.remove(INVULNERABLE_UNTIL);
@@ -75,6 +74,5 @@ public class AbilityDamageUtil {
             return;
         }
         pdc.remove(INVULNERABLE_UNTIL);
-        entity.setInvulnerable(false);
     }
 }

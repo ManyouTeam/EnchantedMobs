@@ -49,7 +49,7 @@ public class LaunchProjectileAbility extends AbstractAbility {
         projectile.setShooter(livingEntity);
         projectile.setVelocity(direction);
 
-        if (projectile instanceof Fireball fireball) {
+        if (projectile instanceof Explosive fireball) {
             fireball.setYield((float) getDouble("fireball-yield", 1.0, context.level()));
             fireball.setIsIncendiary(getBoolean("fireball-incendiary", true));
         }

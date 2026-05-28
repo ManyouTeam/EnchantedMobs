@@ -68,6 +68,8 @@ override-lang:
   power.wither: "Wither"
   power.flying: "Flying"
   power.ghastly: "Ghastly"
+  power.wind_charge: "Wind Charge"
+  power.dragon_breath: "Dragon Breath"
   power.necromancer: "Necromancer"
   power.hasty: "Hasty"
   power.blastoff: "Blastoff"

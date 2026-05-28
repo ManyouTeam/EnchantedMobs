@@ -94,7 +94,6 @@ public class AbilityManager {
         registerAbilityParser("fire", FireAbility::new);
         registerAbilityParser("homing_projectile", HomingProjectileAbility::new);
         registerAbilityParser("teleport_near_target", TeleportNearTargetAbility::new);
-        registerAbilityParser("artillery", ArtilleryAbility::new);
         registerAbilityParser("guardian_beam", GuardianBeamAbility::new);
         registerAbilityParser("sonic_boom", SonicBoomAbility::new);
         registerAbilityParser("evoker_fangs", EvokerFangsAbility::new);

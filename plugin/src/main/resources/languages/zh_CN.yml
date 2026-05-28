@@ -68,6 +68,8 @@ override-lang:
   power.wither: "凋零"
   power.flying: "浮空"
   power.ghastly: "恶魂术"
+  power.wind_charge: "风弹"
+  power.dragon_breath: "龙息"
   power.necromancer: "死灵"
   power.hasty: "疾行"
   power.blastoff: "升空"
