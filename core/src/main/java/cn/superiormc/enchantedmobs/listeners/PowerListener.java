@@ -102,6 +102,9 @@ public class PowerListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent event) {
+        if (AbilityDamageUtil.isApplyingDirectDamage()) {
+            return;
+        }
         Entity entity = event.getEntity();
         if (entity instanceof Monster) {
             PowerManager.powerManager.handleOnDamage(event);
@@ -126,6 +129,9 @@ public class PowerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMeleeAttack(EntityDamageByEntityEvent event) {
         AbilityDamageUtil.applyMarkedDamage(event);
+        if (AbilityDamageUtil.isApplyingDirectDamage()) {
+            return;
+        }
         PowerManager.powerManager.handleMeleeAttack(event);
     }
 

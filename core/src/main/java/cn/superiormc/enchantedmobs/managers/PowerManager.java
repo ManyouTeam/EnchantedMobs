@@ -599,7 +599,7 @@ public class PowerManager {
         DamageHandler handler = new DamageHandler(entity, damageEntity, event.getDamage(), byEntity, event instanceof EntityDamageByBlockEvent, event.getCause());
         forEachActivePower(entity, null, "on-damage", (power, level) -> power.onDamage(level, handler), event::setCancelled);
         if (handler.replacedNewDamage && !event.isCancelled()) {
-            event.setDamage(Math.max(0.1, handler.damage));
+            event.setDamage(Math.max(ConfigManager.configManager.getDouble("mob-combat.min-damage", 1.0), handler.damage));
         }
     }
 

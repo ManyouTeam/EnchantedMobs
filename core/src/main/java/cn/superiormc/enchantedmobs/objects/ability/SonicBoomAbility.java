@@ -1,5 +1,6 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
+import cn.superiormc.enchantedmobs.utils.AbilityDamageUtil;
 import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -80,7 +81,7 @@ public class SonicBoomAbility extends AbstractAbility {
 
         double damage = Math.max(0.0D, getDouble("damage", 10.0D, context.level()));
         if (damage > 0.0D) {
-            target.damage(damage, getSourceEntity(context));
+            AbilityDamageUtil.runDirectDamage(() -> target.damage(damage, getSourceEntity(context)));
         }
 
         double horizontal = getDouble("knockback-horizontal", 2.5D, context.level());

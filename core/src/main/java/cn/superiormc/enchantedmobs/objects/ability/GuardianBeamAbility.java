@@ -1,6 +1,7 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
+import cn.superiormc.enchantedmobs.utils.AbilityDamageUtil;
 import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import cn.superiormc.enchantedmobs.utils.VirtualGuardianBeam;
 import org.bukkit.Sound;
@@ -46,7 +47,7 @@ public class GuardianBeamAbility extends AbstractAbility {
                         return;
                     }
 
-                    victim.damage(damage, damageSource);
+                    AbilityDamageUtil.runDirectDamage(() -> victim.damage(damage, damageSource));
                     victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GUARDIAN_ATTACK, 1f, 1f);
                 }));
         return false;

@@ -11,7 +11,7 @@ on-target-tick:
     1:
       type: limit
       random: '0.08 + {level} / 500'
-      cooldown: '12 - {level} / 10'
+      cooldown: '5'
       abilities:
         1:
           type: launch_projectile

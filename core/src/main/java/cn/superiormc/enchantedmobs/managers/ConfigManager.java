@@ -78,6 +78,10 @@ public class ConfigManager {
         return config.getInt(path, defaultValue);
     }
 
+    public double getDouble(String path, double defaultValue) {
+        return config.getDouble(path, defaultValue);
+    }
+
     public ConfigurationSection getSection(String path) {
         if (config.getConfigurationSection(path) == null) {
             return new MemoryConfiguration();

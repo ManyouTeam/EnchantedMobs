@@ -12,6 +12,22 @@ public class AbilityDamageUtil {
     private static final NamespacedKey DAMAGE = new NamespacedKey(EnchantedMobs.instance, "ability_damage");
     private static final NamespacedKey INVULNERABLE_UNTIL = new NamespacedKey(EnchantedMobs.instance, "ability_invulnerable_until");
 
+    private static final ThreadLocal<Integer> APPLYING_DIRECT_DAMAGE = ThreadLocal.withInitial(() -> 0);
+
+    public static void runDirectDamage(Runnable runnable) {
+        APPLYING_DIRECT_DAMAGE.set(APPLYING_DIRECT_DAMAGE.get() + 1);
+        try {
+            runnable.run();
+        } finally {
+            int depth = APPLYING_DIRECT_DAMAGE.get() - 1;
+            if (depth <= 0) {
+                APPLYING_DIRECT_DAMAGE.remove();
+            } else {
+                APPLYING_DIRECT_DAMAGE.set(depth);
+            }
+        }
+    }
+
     private AbilityDamageUtil() {
     }
 
@@ -20,6 +36,10 @@ public class AbilityDamageUtil {
             return;
         }
         entity.getPersistentDataContainer().set(DAMAGE, PersistentDataType.DOUBLE, damage);
+    }
+
+    public static boolean isApplyingDirectDamage() {
+        return APPLYING_DIRECT_DAMAGE.get() > 0;
     }
 
     public static void applyMarkedDamage(EntityDamageByEntityEvent event) {

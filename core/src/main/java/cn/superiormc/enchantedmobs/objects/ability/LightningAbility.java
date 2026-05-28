@@ -1,5 +1,6 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
+import cn.superiormc.enchantedmobs.utils.AbilityDamageUtil;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -28,7 +29,7 @@ public class LightningAbility extends AbstractAbility {
             entity.getWorld().strikeLightningEffect(strike);
             for (Entity nearby : entity.getNearbyEntities(radius, 3, radius)) {
                 if (nearby instanceof LivingEntity livingEntity) {
-                    livingEntity.damage(getDouble("damage", 4.0, level), damageSource);
+                    AbilityDamageUtil.runDirectDamage(() -> livingEntity.damage(getDouble("damage", 4.0, level), damageSource));
                 }
             }
         }

@@ -19,3 +19,5 @@ on-projectile-tick:
       type: homing_projectile
       radius: 20
       strength: 0.3
+      max-ticks: 100
+      remove-on-expire: true
