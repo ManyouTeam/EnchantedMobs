@@ -131,3 +131,7 @@ override-lang:
   entity.zombie_villager: "僵尸村民"
   entity.zombified_piglin: "僵尸猪灵"
   power.regeneration: "重生"
+  power.wind_charged: "蓄风"
+  power.weaving: "盘丝"
+  power.oozing: "渗浆"
+  power.infested: "寄生"

@@ -131,3 +131,7 @@ override-lang:
   entity.zombie_villager: "Zombie Villager"
   entity.zombified_piglin: "Zombified Piglin"
   power.regeneration: "Regeneration"
+  power.wind_charged: "Wind Charged"
+  power.weaving: "Weaving"
+  power.oozing: "Oozing"
+  power.infested: "Infested"

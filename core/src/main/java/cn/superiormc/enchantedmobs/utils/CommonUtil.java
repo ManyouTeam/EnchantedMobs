@@ -12,7 +12,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.projectiles.ProjectileSource;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -97,13 +96,6 @@ public class CommonUtil {
                 } else {
                     s = s.replace(var, args[i + 1]);
                 }
-            }
-            String[] tempVal1 = s.split(";;");
-            if (tempVal1.length > 1) {
-                for (String string : tempVal1) {
-                    resultList.add(TextUtil.withPAPI(string, player));
-                }
-                continue;
             }
             resultList.add(TextUtil.withPAPI(s, player));
         }
