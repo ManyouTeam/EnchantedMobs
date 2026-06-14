@@ -71,6 +71,7 @@ public abstract class EntityScannerManager {
         for (LivingEntity entity : entitiesPowerCache.keySet()) {
             if (entity == null || !entity.isValid() || entity.isDead()) {
                 entitiesPowerCache.remove(entity);
+                entitiesLevelCache.remove(entity);
             }
         }
         return entitiesPowerCache.keySet();

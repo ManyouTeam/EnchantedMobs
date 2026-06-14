@@ -62,7 +62,13 @@ public class PaperMethodUtil implements SpecialMethodUtil {
         return item;
     }
 
-    public Map<String, PlayerProfile> playerProfiles = new HashMap<>();
+    public Map<String, PlayerProfile> playerProfiles = Collections.synchronizedMap(
+            new LinkedHashMap<>(256, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<String, PlayerProfile> eldest) {
+                    return size() > 256;
+                }
+            });
 
     @Override
     public SkullMeta setSkullMeta(SkullMeta meta, String skull) {
@@ -230,7 +236,24 @@ public class PaperMethodUtil implements SpecialMethodUtil {
         Map<String, Long> generations = bossBarGenerations.get(player.getUniqueId());
         if (generations != null) {
             generations.remove(key);
+            if (generations.isEmpty()) {
+                bossBarGenerations.remove(player.getUniqueId(), generations);
+            }
         }
+        if (playerBars.isEmpty()) {
+            bossBarCache.remove(player.getUniqueId(), playerBars);
+        }
+    }
+
+    @Override
+    public void clearBossBars(Player player) {
+        Map<String, BossBar> playerBars = bossBarCache.remove(player.getUniqueId());
+        if (playerBars != null) {
+            for (BossBar bar : playerBars.values()) {
+                player.hideBossBar(bar);
+            }
+        }
+        bossBarGenerations.remove(player.getUniqueId());
     }
 
     @Override

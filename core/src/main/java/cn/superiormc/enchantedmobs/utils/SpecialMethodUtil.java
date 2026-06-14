@@ -45,6 +45,8 @@ public interface SpecialMethodUtil {
 
     void hideBossBar(Player player, String key);
 
+    void clearBossBars(Player player);
+
     String legacyParse(String text);
 
     String getItemName(ItemMeta meta);

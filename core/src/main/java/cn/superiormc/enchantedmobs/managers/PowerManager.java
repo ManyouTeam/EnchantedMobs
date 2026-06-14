@@ -144,7 +144,14 @@ public class PowerManager {
     }
 
     private void hideStaleMobBossBars(Player player, Set<String> visibleKeys) {
-        Set<String> trackedKeys = playerMobBossBars.computeIfAbsent(player.getUniqueId(), id -> new HashSet<>());
+        UUID playerId = player.getUniqueId();
+        Set<String> trackedKeys = playerMobBossBars.get(playerId);
+        if (trackedKeys == null) {
+            if (!visibleKeys.isEmpty()) {
+                playerMobBossBars.put(playerId, new HashSet<>(visibleKeys));
+            }
+            return;
+        }
         Set<String> staleKeys = new HashSet<>(trackedKeys);
         staleKeys.removeAll(visibleKeys);
 
@@ -152,8 +159,17 @@ public class PowerManager {
             EnchantedMobs.methodUtil.hideBossBar(player, staleKey);
         }
 
-        trackedKeys.clear();
-        trackedKeys.addAll(visibleKeys);
+        if (visibleKeys.isEmpty()) {
+            playerMobBossBars.remove(playerId);
+        } else {
+            trackedKeys.clear();
+            trackedKeys.addAll(visibleKeys);
+        }
+    }
+
+    public void clearPlayerBossBars(Player player) {
+        playerMobBossBars.remove(player.getUniqueId());
+        EnchantedMobs.methodUtil.clearBossBars(player);
     }
 
     public void cancelTask() {

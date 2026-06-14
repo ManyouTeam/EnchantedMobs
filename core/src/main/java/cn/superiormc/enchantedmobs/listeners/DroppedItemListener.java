@@ -20,6 +20,8 @@ import java.util.*;
 
 public class DroppedItemListener implements Listener {
 
+    private static final int MAX_ITEMS_PER_PLAYER = 100;
+
     private static final Set<EntityRemoveEvent.Cause> RETURN_CAUSES = EnumSet.of(
             EntityRemoveEvent.Cause.DEATH,
             EntityRemoveEvent.Cause.DESPAWN,
@@ -80,6 +82,9 @@ public class DroppedItemListener implements Listener {
                     LanguageManager.languageManager.sendStringText(player, "item-back");
                 } else {
                     List<DroppedItem> tempVal1 = cache.computeIfAbsent(uuid, ignored -> new ArrayList<>());
+                    if (tempVal1.size() >= MAX_ITEMS_PER_PLAYER) {
+                        return;
+                    }
                     if (tempVal1.stream().anyMatch(saved -> saved.itemEntityUUID().equals(item.getUniqueId()))) {
                         return;
                     }
