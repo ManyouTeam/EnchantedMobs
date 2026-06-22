@@ -49,19 +49,14 @@ public class NBTDouble extends AbstractMatchItemRule {
     }
 
     private boolean getResult(String lastElement, String last2Element, String last3Element, NBTCompound nbtCompound) {
-        switch (last2Element) {
-            case ">=":
-                return nbtCompound.getDouble(last3Element) >= Double.parseDouble(lastElement);
-            case ">":
-                return nbtCompound.getDouble(last3Element) > Double.parseDouble(lastElement);
-            case "<=":
-                return nbtCompound.getDouble(last3Element) <= Double.parseDouble(lastElement);
-            case "<":
-                return nbtCompound.getDouble(last3Element) < Double.parseDouble(lastElement);
-            case "==":
-                return nbtCompound.getDouble(last3Element) == Double.parseDouble(lastElement);
-        }
-        return false;
+        return switch (last2Element) {
+            case ">=" -> nbtCompound.getDouble(last3Element) >= Double.parseDouble(lastElement);
+            case ">" -> nbtCompound.getDouble(last3Element) > Double.parseDouble(lastElement);
+            case "<=" -> nbtCompound.getDouble(last3Element) <= Double.parseDouble(lastElement);
+            case "<" -> nbtCompound.getDouble(last3Element) < Double.parseDouble(lastElement);
+            case "==" -> nbtCompound.getDouble(last3Element) == Double.parseDouble(lastElement);
+            default -> false;
+        };
     }
 
     @Override

@@ -49,19 +49,14 @@ public class NBTByte extends AbstractMatchItemRule {
     }
 
     private boolean getResult(String lastElement, String last2Element, String last3Element, NBTCompound nbtCompound) {
-        switch (last2Element) {
-            case ">=":
-                return nbtCompound.getByte(last3Element) >= Byte.parseByte(lastElement);
-            case ">":
-                return nbtCompound.getByte(last3Element) > Byte.parseByte(lastElement);
-            case "<=":
-                return nbtCompound.getByte(last3Element) <= Byte.parseByte(lastElement);
-            case "<":
-                return nbtCompound.getByte(last3Element) < Byte.parseByte(lastElement);
-            case "==":
-                return nbtCompound.getByte(last3Element) == Byte.parseByte(lastElement);
-        }
-        return false;
+        return switch (last2Element) {
+            case ">=" -> nbtCompound.getByte(last3Element) >= Byte.parseByte(lastElement);
+            case ">" -> nbtCompound.getByte(last3Element) > Byte.parseByte(lastElement);
+            case "<=" -> nbtCompound.getByte(last3Element) <= Byte.parseByte(lastElement);
+            case "<" -> nbtCompound.getByte(last3Element) < Byte.parseByte(lastElement);
+            case "==" -> nbtCompound.getByte(last3Element) == Byte.parseByte(lastElement);
+            default -> false;
+        };
     }
 
     @Override
