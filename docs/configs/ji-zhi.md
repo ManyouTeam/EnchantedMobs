@@ -44,14 +44,14 @@ Use `/es playerpower` to check your own strength, or `/es playerpower <player>` 
 
 If your server has **PlaceholderAPI**, you can display player strength with `%enchantedmobs_player_power%`.
 
-## Mob Generation
+## Mob Spawn
 
-You can generate **EnchantedMobs** in two ways:
+You can spawn **EnchantedMobs** in two ways:
 
-* Command generation: rarely used in most servers.
-* Automatic generation: the plugin replaces newly spawning vanilla mobs with **EnchantedMobs**.
+* Command spawn: rarely used in most servers.
+* Automatic spawn the plugin replaces newly spawning vanilla mobs with **EnchantedMobs**.
 
-For automatic generation:
+For automatic spawn:
 
 * Players with `enchantedmobs.nodify` permission receive notifications when replacement occurs.
 * Related config options are in `config.yml`:
