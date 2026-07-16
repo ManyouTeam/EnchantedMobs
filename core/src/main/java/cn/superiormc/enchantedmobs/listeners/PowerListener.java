@@ -3,7 +3,6 @@ package cn.superiormc.enchantedmobs.listeners;
 import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.managers.*;
 import cn.superiormc.enchantedmobs.utils.AbilityDamageUtil;
-import cn.superiormc.enchantedmobs.utils.DebugUtil;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.*;
@@ -65,7 +64,6 @@ public class PowerListener implements Listener {
             return;
         }
 
-        DebugUtil.log("spawn", "Trying to assign powers to spawned mob.");
         int averagePower = PowerManager.powerManager.getNearbyAveragePlayerPower(
                 entity.getLocation(),
                 ConfigManager.configManager.getInt("mob-power-generator.player-scan-range", 48));
@@ -82,7 +80,6 @@ public class PowerListener implements Listener {
 
         if (!PowerManager.powerManager.assignRandomPowersByLevel(level, entity).isEmpty()) {
             notifyPoweredMobSpawn(entity);
-            DebugUtil.log("spawn", "Mob powers assigned successfully.");
         }
     }
 

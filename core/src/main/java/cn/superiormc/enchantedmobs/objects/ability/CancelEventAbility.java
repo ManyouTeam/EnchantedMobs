@@ -1,6 +1,5 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
-import cn.superiormc.enchantedmobs.utils.DebugUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class CancelEventAbility extends AbstractAbility {
@@ -11,7 +10,6 @@ public class CancelEventAbility extends AbstractAbility {
 
     @Override
     public boolean execute(AbilityContext context) {
-        DebugUtil.log("ability", "Cancel event ability executed.");
         return true;
     }
 

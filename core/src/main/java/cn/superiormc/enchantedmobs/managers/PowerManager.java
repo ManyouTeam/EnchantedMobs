@@ -4,7 +4,6 @@ import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.objects.power.ObjectPower;
 import cn.superiormc.enchantedmobs.utils.CommonUtil;
 import cn.superiormc.enchantedmobs.objects.power.events.*;
-import cn.superiormc.enchantedmobs.utils.DebugUtil;
 import cn.superiormc.enchantedmobs.utils.SchedulerUtil;
 import cn.superiormc.enchantedmobs.utils.TextUtil;
 import org.bukkit.*;
@@ -36,7 +35,9 @@ public class PowerManager {
     private SchedulerUtil bossBarTask;
 
     private final Map<UUID, Set<String>> playerMobBossBars = new HashMap<>();
+
     private final Map<UUID, TargetCombatState> targetCombatStates = new HashMap<>();
+
     private long lastTargetCombatStateCleanupAt = 0L;
 
     public PowerManager() {
@@ -549,7 +550,6 @@ public class PowerManager {
         ShootBowHandler handler = new ShootBowHandler(projectile, shooter, bow, consume, equipmentSlot, force);
         forEachActivePower(shooter, projectile, "on-shoot-bow", (power, level) -> power.onShootProjectile(level, handler), event::setCancelled);
         if (handler.replacedNewProjectile && !event.isCancelled()) {
-            DebugUtil.log("projectile", "Projectile has been replaced by on-shoot-bow modifier/ability.");
             event.setProjectile(handler.projectile);
         }
         if (ConfigManager.configManager.getBoolean("optimize.enabled-projectile-tick")) {

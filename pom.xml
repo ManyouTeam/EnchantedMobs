@@ -21,7 +21,7 @@
     <properties>
         <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>1.2.7</revision>
+        <revision>1.2.8</revision>
         <name>EnchantedMobs</name>
     </properties>
 

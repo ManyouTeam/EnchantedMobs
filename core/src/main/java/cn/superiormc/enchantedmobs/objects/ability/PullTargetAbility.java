@@ -1,6 +1,5 @@
 package cn.superiormc.enchantedmobs.objects.ability;
 
-import cn.superiormc.enchantedmobs.utils.DebugUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +17,6 @@ public class PullTargetAbility extends AbstractAbility {
 
     @Override
     public boolean execute(AbilityContext context) {
-        DebugUtil.log("ability", "Pull target ability start.");
         Entity attacker = context.handler().sourceEntity;
         if (attacker == null) {
             return false;
@@ -45,7 +43,6 @@ public class PullTargetAbility extends AbstractAbility {
             velocity.setY(vertical);
         }
         target.setVelocity(velocity);
-        DebugUtil.log("ability", "Pull target ability finished.");
         return false;
     }
 

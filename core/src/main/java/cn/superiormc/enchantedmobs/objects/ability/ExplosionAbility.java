@@ -2,7 +2,6 @@ package cn.superiormc.enchantedmobs.objects.ability;
 
 import cn.superiormc.enchantedmobs.EnchantedMobs;
 import cn.superiormc.enchantedmobs.utils.AbilityDamageUtil;
-import cn.superiormc.enchantedmobs.utils.DebugUtil;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,7 +23,6 @@ public class ExplosionAbility extends AbstractAbility {
         if (loc == null || loc.getWorld() == null) {
             return false;
         }
-        DebugUtil.log("ability", "Create explosion ability executed.");
 
         AbilityDamageUtil.runDirectDamage(() ->
                 EnchantedMobs.methodUtil.createExplosion(loc, getTargetEntity(context), yield, setFire, breakBlocks));

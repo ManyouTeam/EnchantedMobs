@@ -59,7 +59,7 @@ public class ObjectPower extends AdvancedSection {
     }
 
     public boolean onShootProjectile(int level, ShootBowHandler handler) {
-        if (!matchEntityHealthConditions("on-shoow-bow.conditions", level, handler.sourceEntity)) {
+        if (!matchEntityHealthConditions("on-shoot-bow.conditions", level, handler.sourceEntity)) {
             return false;
         }
         applyShootBowModifier(level, handler);
